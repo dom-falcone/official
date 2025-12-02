@@ -156,6 +156,24 @@
 </head>
 
 <body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="loader-text">Ждать. Идет загрузка.</div>
+            <div class="loader-hymn-section">
+                <div class="loader-hymn-label">Гимн Дома Фальконе</div>
+                <div class="loader-player-container">
+                    <div class="loader-play-btn" id="loader-play-btn">
+                        <div class="loader-play-icon"></div>
+                    </div>
+                    <div class="loader-progress-container">
+                        <div class="loader-progress-bar" id="loader-progress"></div>
+                    </div>
+                </div>
+                <audio id="loader-audio" src="../assets/audio/hymn.mp3"></audio>
+            </div>
+        </div>
+    </div>
     <header class="topbar">
         <div class="container topbar-inner">
             <div class="brand">
@@ -170,7 +188,7 @@
                 <a href="../about">О доме</a>
                 <a href="../history">История</a>
                 <a href="../enemies" class="active">Противники</a>
-                <a href="../photos">Фотоотчет</a>
+                <a href="../news">Новости</a>
             </nav>
             <div class="auth-action">
                 <a href="../login" class="btn-login" id="auth-btn">Войти</a>
