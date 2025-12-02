@@ -8,29 +8,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=2">
-    <link rel="icon" href="/assets/images/Falcone-circle.png" type="image/png">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1">
+    <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
 </head>
 
 <body>
     <header class="topbar">
         <div class="container topbar-inner">
             <div class="brand">
-                <a href="/homepage">
+                <a href="../homepage">
                     <div class="logo-mark"
-                        style="background: url('/assets/images/Falcone.png') no-repeat center/cover;">
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;">
                     </div>
                     <span class="brand-title">Dom Falcone</span>
                 </a>
             </div>
             <nav class="nav">
-                <a href="/about">О доме</a>
-                <a href="/history">История</a>
-                <a href="/enemies">Противники</a>
-                <a href="/news">Новости</a>
+                <a href="../about">О доме</a>
+                <a href="../history">История</a>
+                <a href="../enemies">Противники</a>
+                <a href="../photos">Фотоотчет</a>
             </nav>
             <div class="auth-action">
-                <a href="/login" class="btn-login" id="auth-btn">Войти</a>
+                <a href="../login" class="btn-login" id="auth-btn">Войти</a>
             </div>
         </div>
     </header>
@@ -38,7 +38,7 @@
     <main class="hymn-page">
         <div class="hymn-container">
             <div class="hymn-logo-section">
-                <img src="/assets/images/Falcone.png" alt="Dom Falcone Logo" class="hymn-logo">
+                <img src="../assets/images/Falcone.png" alt="Falcone Logo" class="hymn-logo">
             </div>
             <div class="hymn-player-section">
                 <div class="triangle-player">
@@ -52,7 +52,7 @@
                     <div class="track-info">
                         <h3>Гимн Дома Фальконе</h3>
                     </div>
-                    <audio id="audioPlayer" src="/assets/audio/MorgenTwin_ПОПУЛЬСВИДЬ_мэшап.mp3"></audio>
+                    <audio id="hymn-audio" src="../assets/audio/hymn.mp3"></audio>
                 </div>
             </div>
         </div>
@@ -63,10 +63,10 @@
             <small>© Дом Фальконе — 2025. Все права защищены. Прям реально защищены.</small>
         </div>
     </footer>
-    <script src="/assets/js/main.js?v=2"></script>
+    <script src="../assets/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const audio = document.getElementById('audioPlayer');
+            const audio = document.getElementById('hymn-audio');
             const playBtn = document.getElementById('playBtn');
             const progressLine = document.getElementById('progressLine');
             const playerContainer = document.querySelector('.triangle-player');
