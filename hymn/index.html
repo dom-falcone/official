@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Dom Falcone - Гимн</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=2">
+    <link rel="icon" href="/assets/images/Falcone-circle.png" type="image/png">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <a href="/homepage">
+                    <div class="logo-mark"
+                        style="background: url('/assets/images/Falcone.png') no-repeat center/cover;">
+                    </div>
+                    <span class="brand-title">Dom Falcone</span>
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="/about">О доме</a>
+                <a href="/history">История</a>
+                <a href="/enemies">Противники</a>
+                <a href="/news">Новости</a>
+            </nav>
+            <div class="auth-action">
+                <a href="/login" class="btn-login" id="auth-btn">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="hymn-page">
+        <div class="hymn-container">
+            <div class="hymn-logo-section">
+                <img src="/assets/images/Falcone.png" alt="Dom Falcone Logo" class="hymn-logo">
+            </div>
+            <div class="hymn-player-section">
+                <div class="triangle-player">
+                    <div class="triangle-play-btn" id="playBtn">
+                        <div class="play-icon"></div>
+                    </div>
+                    <div class="player-line-container">
+                        <div class="player-line-bg"></div>
+                        <div class="player-line-progress" id="progressLine"></div>
+                    </div>
+                    <div class="track-info">
+                        <h3>Гимн Дома Фальконе</h3>
+                    </div>
+                    <audio id="audioPlayer" src="/assets/audio/MorgenTwin_ПОПУЛЬСВИДЬ_мэшап.mp3"></audio>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© Дом Фальконе — 2025. Все права защищены. Прям реально защищены.</small>
+        </div>
+    </footer>
+    <script src="/assets/js/main.js?v=2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('audioPlayer');
+            const playBtn = document.getElementById('playBtn');
+            const progressLine = document.getElementById('progressLine');
+            const playerContainer = document.querySelector('.triangle-player');
+
+            playBtn.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play();
+                    playerContainer.classList.add('playing');
+                } else {
+                    audio.pause();
+                    playerContainer.classList.remove('playing');
+                }
+            });
+
+            audio.addEventListener('timeupdate', () => {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressLine.style.width = percent + '%';
+            });
+
+            audio.addEventListener('ended', () => {
+                playerContainer.classList.remove('playing');
+                progressLine.style.width = '0%';
+            });
+        });
+    </script>
+</body>
+
+</html>

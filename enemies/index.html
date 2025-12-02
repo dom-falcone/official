@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Enemies - Dom Falcone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=1">
+    <link rel="icon" href="/assets/images/Falcone-circle.png" type="image/png">
+    <style>
+        .enemy-card {
+            background: var(--color-surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .enemy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .enemy-image-container {
+            width: 100%;
+            height: 300px;
+            background: #fff;
+            /* White background for bottles */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .enemy-image {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .enemy-card:hover .enemy-image {
+            transform: scale(1.1);
+        }
+
+        .enemy-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .enemy-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .enemy-description {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .battle-status {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        .status-lost {
+            background: rgba(213, 0, 0, 0.2);
+            color: #ff1744;
+            border: 1px solid rgba(255, 23, 68, 0.3);
+        }
+
+        .status-won {
+            background: rgba(0, 200, 83, 0.2);
+            color: #00e676;
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+
+        /* Main Enemy Special Styles */
+        .main-enemy {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: linear-gradient(135deg, rgba(20, 0, 0, 0.9), rgba(5, 5, 5, 0.95));
+            border: 1px solid rgba(255, 23, 68, 0.2);
+        }
+
+        .main-enemy .enemy-image-container {
+            height: 500px;
+            background: transparent;
+        }
+
+        .main-enemy .enemy-image-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: 0;
+        }
+
+        .main-enemy .enemy-image {
+            z-index: 1;
+            filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+        }
+
+        .main-enemy .enemy-content {
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .main-enemy .enemy-title {
+            font-size: 3rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .main-enemy .enemy-description {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-enemy {
+                grid-template-columns: 1fr;
+            }
+
+            .main-enemy .enemy-image-container {
+                height: 300px;
+            }
+
+            .main-enemy .enemy-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <a href="/homepage">
+                    <div class="logo-mark"
+                        style="background: url('/assets/images/Falcone.png') no-repeat center/cover;">
+                    </div>
+                    <span class="brand-title">Dom Falcone</span>
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="/about">О доме</a>
+                <a href="/history">История</a>
+                <a href="/enemies" class="active">Противники</a>
+                <a href="/news">Новости</a>
+            </nav>
+            <div class="auth-action">
+                <a href="/login" class="btn-login" id="auth-btn">Войти</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header"
+        style="background-image: url('/assets/images/enemies-background.jpeg'); background-position: center 94%;">
+        <div class="container">
+            <h1>Наши Противники</h1>
+            <p>Враги, с которыми мы сражаемся каждую неделю</p>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="features">
+            <!-- Main Enemy -->
+            <div class="enemy-card main-enemy animate-fade-up">
+                <div class="enemy-image-container">
+                    <img src="/assets/images/jim-beam-1.5l-transparent.png" alt="Jim Beam 1.5L" class="enemy-image">
+                </div>
+                <div class="enemy-content">
+                    <div
+                        style="text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 700;">
+                        Главный Босс</div>
+                    <h2 class="enemy-title">Jim Beam (1.5L)</h2>
+                    <p class="enemy-description">
+                        Jim Beam — американский бренд бурбона, производимый в Клермонте, штат Кентукки. Он был основан
+                        Джейкобом Бимом в 1795 году.
+                        Эта 1.5-литровая бутылка — наш самый грозный соперник. Её бесконечный запас "белого лейбла"
+                        сломил немало храбрых воинов.
+                        Вкус ванили и карамели скрывает коварную силу, способную отправить в нокаут даже самых стойких
+                        членов Дома.
+                    </p>
+                    <div class="battle-status status-lost">
+                        Бой проигран (Поражение)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Enemies -->
+            <div class="enemy-card animate-fade-up">
+                <div class="enemy-image-container">
+                    <img src="/assets/images/captain-morgan.jpg" alt="Captain Morgan Spiced Gold" class="enemy-image">
+                </div>
+                <div class="enemy-content">
+                    <h3 class="enemy-title">Captain Morgan Spiced Gold</h3>
+                    <p class="enemy-description">
+                        Названный в честь валлийского капера сэра Генри Моргана, этот пряный ром с Карибских островов
+                        славится своим мягким вкусом.
+                        Но не дайте пирату обмануть вас - он коварен. Однако, благодаря слаженной работе команды, мы
+                        смогли взять его на абордаж.
+                    </p>
+                    <div class="battle-status status-won">
+                        Бой выигран
+                    </div>
+                </div>
+            </div>
+
+            <div class="enemy-card animate-fade-up">
+                <div class="enemy-image-container">
+                    <img src="/assets/images/havana-club.jpg" alt="Havana Club Especial" class="enemy-image">
+                </div>
+                <div class="enemy-content">
+                    <h3 class="enemy-title">Havana Club Especial</h3>
+                    <p class="enemy-description">
+                        Легендарный кубинский ром, выдержанный в дубовых бочках. Его золотистый цвет и аромат сахарного
+                        тростника пытались сбить нас с пути.
+                        Битва была жаркой, как ночь в Гаване, но Дом Фальконе вышел победителем.
+                    </p>
+                    <div class="battle-status status-won">
+                        Бой выигран
+                    </div>
+                </div>
+            </div>
+
+            <div class="enemy-card animate-fade-up">
+                <div class="enemy-image-container">
+                    <img src="/assets/images/jim-beam-cherry.jpg" alt="Jim Beam Black Cherry" class="enemy-image">
+                </div>
+                <div class="enemy-content">
+                    <h3 class="enemy-title">Jim Beam Black Cherry</h3>
+                    <p class="enemy-description">
+                        Коварный младший брат нашего главного врага. Смесь бурбона и ликера из черной вишни.
+                        Сладкий, но опасный. Мы ожидали подвоха от семьи Бимов, поэтому нанесли превентивный удар и
+                        уничтожили его до последней капли.
+                    </p>
+                    <div class="battle-status status-won">
+                        Бой выигран
+                    </div>
+                </div>
+            </div>
+
+            <div class="enemy-card animate-fade-up">
+                <div class="enemy-image-container">
+                    <img src="/assets/images/pott-rum.jpg" alt="Pott Rum 40" class="enemy-image">
+                </div>
+                <div class="enemy-content">
+                    <h3 class="enemy-title">Pott Rum</h3>
+                    <p class="enemy-description">
+                        "Der Gute Pott". Немецкая классика с высоким градусом. Этот ром суров, как северное море.
+                        Он пытался сломить наш дух своей прямолинейностью, но мы оказались крепче.
+                    </p>
+                    <div class="battle-status status-won">
+                        Бой выигран
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© Дом Фальконе — 2025. Все права защищены. Прям реально защищены.</small>
+        </div>
+    </footer>
+
+    <a href="/contact" class="floating-contact-btn">
+        <img src="/assets/images/phone-icon.png" alt="Contact">
+        <span class="btn-text">Связаться с Домом</span>
+    </a>
+
+    <script src="/assets/js/main.js"></script>
+</body>
+
+</html>
