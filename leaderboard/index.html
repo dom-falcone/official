@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Рейтинг - Dom Falcone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
+    <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
+    <style>
+        .leaderboard-header {
+            padding: 3rem 0 2rem;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(255, 23, 68, 0.05), transparent);
+            border-bottom: 1px solid rgba(255, 23, 68, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .leaderboard-header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            letter-spacing: 0.02em;
+        }
+
+        .leaderboard-header p {
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Podium Styles */
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            padding: 0 2rem;
+        }
+
+        .podium-place {
+            position: relative;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .podium-place:hover {
+            transform: translateY(-10px);
+        }
+
+        .podium-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            position: relative;
+            border: 4px solid;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .podium-place.first .podium-avatar {
+            width: 150px;
+            height: 150px;
+            border-color: #ffd700;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+        }
+
+        .podium-place.second .podium-avatar {
+            border-color: #c0c0c0;
+            box-shadow: 0 0 30px rgba(192, 192, 192, 0.4);
+        }
+
+        .podium-place.third .podium-avatar {
+            border-color: #cd7f32;
+            box-shadow: 0 0 30px rgba(205, 127, 50, 0.4);
+        }
+
+        .podium-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .podium-crown {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        .podium-rank {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .podium-place.first .podium-rank {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+        }
+
+        .podium-place.second .podium-rank {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+        }
+
+        .podium-place.third .podium-rank {
+            background: linear-gradient(135deg, #cd7f32, #d4a574);
+        }
+
+        .podium-info {
+            margin-bottom: 1rem;
+        }
+
+        .podium-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .podium-place.first .podium-name {
+            font-size: 1.5rem;
+            color: #ffd700;
+        }
+
+        .podium-rank-badge {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .podium-points {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .podium-place.first .podium-points {
+            font-size: 2.2rem;
+        }
+
+        .podium-base {
+            background: linear-gradient(to top, rgba(255, 23, 68, 0.1), rgba(255, 23, 68, 0.05));
+            border: 2px solid rgba(255, 23, 68, 0.2);
+            border-radius: 10px;
+            padding: 2rem 1.5rem;
+            min-width: 200px;
+        }
+
+        .podium-place.first .podium-base {
+            height: 280px;
+            background: linear-gradient(to top, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .podium-place.second .podium-base {
+            height: 240px;
+        }
+
+        .podium-place.third .podium-base {
+            height: 220px;
+        }
+
+        /* Leaderboard List */
+        .leaderboard-list {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--color-surface);
+            border: 1px solid rgba(255, 23, 68, 0.1);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .leaderboard-item:hover {
+            border-color: rgba(255, 23, 68, 0.3);
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .leaderboard-rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .leaderboard-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--color-primary);
+            object-fit: cover;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.2rem;
+        }
+
+        .leaderboard-rank-badge {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .leaderboard-points {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: right;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: left;
+            margin: 3rem 0 2rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-text-muted);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 23, 68, 0.2);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 968px) {
+            .podium-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .podium-place {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .podium-base {
+                height: auto !important;
+            }
+
+            .leaderboard-header h1 {
+                font-size: 2rem;
+            }
+
+            .leaderboard-item {
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .leaderboard-rank {
+                font-size: 1.2rem;
+                min-width: 40px;
+            }
+
+            .leaderboard-avatar {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="loader-text">Ждать. Идет загрузка.</div>
+            <div class="loader-hymn-section">
+                <div class="loader-hymn-label">Гимн Дома Фальконе</div>
+                <div class="loader-player-container">
+                    <div class="loader-play-btn" id="loader-play-btn">
+                        <div class="loader-play-icon"></div>
+                    </div>
+                    <div class="loader-progress-container">
+                        <div class="loader-progress-bar" id="loader-progress"></div>
+                    </div>
+                </div>
+                <audio id="loader-audio" src="../assets/audio/hymn.mp3"></audio>
+            </div>
+        </div>
+    </div>
+
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <a href="../homepage">
+                    <div class="logo-mark"
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
+                    <span class="brand-title">Dom Falcone</span>
+                </a>
+            </div>
+
+            <nav class="nav">
+                <a href="../about">О доме</a>
+                <a href="../history">История</a>
+                <a href="../enemies">Противники</a>
+                <a href="../news">Новости</a>
+            </nav>
+
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login">Войти</a>
+            </div>
+
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="leaderboard-header">
+            <div class="container">
+                <h1>🏆 Рейтинг семьи</h1>
+                <p>Те, кто доказал свою преданность Дому</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Podium -->
+            <div id="podium-container" class="podium-container">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Загрузка рейтинга...</p>
+                </div>
+            </div>
+
+            <!-- Rest of leaderboard -->
+            <div id="leaderboard-section" style="display: none;">
+                <div class="leaderboard-list" id="leaderboard-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="../contact" class="floating-contact-btn">
+        <img src="../assets/images/phone-icon.png" alt="Contact">
+        <span class="btn-text">Связаться с Домом</span>
+    </a>
+
+    <script>
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        let token = localStorage.getItem('auth_token') || "";
+
+        // Synchronous auth check
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadLeaderboard();
+            if (token) {
+                await loadUserHeader();
+            }
+        });
+
+        async function loadLeaderboard() {
+            try {
+                const headers = {};
+                if (token) {
+                    headers['Authorization'] = 'Bearer ' + token;
+                }
+
+                const res = await fetch(API_BASE + "/leaderboard", { headers });
+
+                if (!res.ok) {
+                    throw new Error('Ошибка загрузки рейтинга');
+                }
+
+                const data = await res.json();
+                displayLeaderboard(data.leaderboard);
+            } catch (err) {
+                console.error('Load leaderboard error:', err);
+                document.getElementById('podium-container').innerHTML = `
+                    <div class="loading-state">
+                        <p style="color: var(--color-primary);">❌ Ошибка загрузки рейтинга</p>
+                    </div>
+                `;
+            } finally {
+                document.getElementById('page-loader').classList.add('loaded');
+            }
+        }
+
+        function displayLeaderboard(users) {
+            const podiumContainer = document.getElementById('podium-container');
+            const leaderboardList = document.getElementById('leaderboard-list');
+            const leaderboardSection = document.getElementById('leaderboard-section');
+
+            if (!users || users.length === 0) {
+                podiumContainer.innerHTML = `
+                    <div class="loading-state">
+                        <p>Рейтинг пока пуст</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Limit to top 10 users only
+            const top10 = users.slice(0, 10);
+
+            // Top 3 for podium
+            const top3 = top10.slice(0, 3);
+            const rest = top10.slice(3); // Positions 4-10
+
+            // Display podium (2nd, 1st, 3rd order for visual effect)
+            let podiumHTML = '';
+
+            if (top3[1]) { // 2nd place
+                podiumHTML += createPodiumCard(top3[1], 2, 'second');
+            }
+
+            if (top3[0]) { // 1st place
+                podiumHTML += createPodiumCard(top3[0], 1, 'first');
+            }
+
+            if (top3[2]) { // 3rd place
+                podiumHTML += createPodiumCard(top3[2], 3, 'third');
+            }
+
+            podiumContainer.innerHTML = podiumHTML;
+
+            // Display rest of leaderboard
+            if (rest.length > 0) {
+                leaderboardSection.style.display = 'block';
+                leaderboardList.innerHTML = rest.map((user, index) => createLeaderboardItem(user, index + 4)).join('');
+            }
+        }
+
+        function createPodiumCard(user, rank, className) {
+            const avatar = user.avatar_url || getDefaultAvatar(user.display_name);
+            const crown = rank === 1 ? '<div class="podium-crown">👑</div>' : '';
+
+            return `
+                <div class="podium-place ${className}" onclick="viewProfile(${user.id})">
+                    <div class="podium-avatar">
+                        ${crown}
+                        <div class="podium-rank">${rank}</div>
+                        <img src="${avatar}" alt="${user.display_name}">
+                    </div>
+                    <div class="podium-base">
+                        <div class="podium-info">
+                            <div class="podium-name">${escapeHtml(user.display_name)}</div>
+                            <div class="podium-rank-badge">${user.rank}</div>
+                            <div class="podium-points">${user.points} ⭐</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createLeaderboardItem(user, rank) {
+            const avatar = user.avatar_url || getDefaultAvatar(user.display_name);
+
+            return `
+                <div class="leaderboard-item" onclick="viewProfile(${user.id})">
+                    <div class="leaderboard-rank">#${rank}</div>
+                    <img src="${avatar}" alt="${user.display_name}" class="leaderboard-avatar">
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">${escapeHtml(user.display_name)}</div>
+                        <div class="leaderboard-rank-badge">${user.rank}</div>
+                    </div>
+                    <div class="leaderboard-points">${user.points} ⭐</div>
+                </div>
+            `;
+        }
+
+        function viewProfile(userId) {
+            window.location.href = `../profile?id=${userId}`;
+        }
+
+        function getDefaultAvatar(name) {
+            const initial = name ? name[0].toUpperCase() : '?';
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23ff1744' width='150' height='150'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function loadUserHeader() {
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const userData = await res.json();
+
+                    document.getElementById('header-display-name').textContent = userData.display_name || userData.email.split('@')[0];
+                    document.getElementById('header-points').textContent = userData.points || 0;
+
+                    const avatar = document.getElementById('header-avatar');
+                    if (userData.avatar_url) {
+                        avatar.src = userData.avatar_url;
+                    } else {
+                        const initial = userData.display_name ? userData.display_name[0].toUpperCase() : 'U';
+                        avatar.src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40"%3E%3Crect fill="%23ff1744" width="40" height="40"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="20" font-family="Arial"%3E${initial}%3C/text%3E%3C/svg%3E`;
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading user header:', err);
+            }
+        }
+    </script>
+    <script src="../assets/js/main.js?v=6"></script>
+    <script src="../assets/js/analytics.js"></script>
+</body>
+
+</html>

@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css?v=1">
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
     <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
 </head>
 
 <body>
@@ -36,22 +37,99 @@
             <div class="brand">
                 <a href="../homepage">
                     <div class="logo-mark"
-                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;">
-                    </div>
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
                     <span class="brand-title">Dom Falcone</span>
                 </a>
             </div>
+
+            <!-- Desktop Navigation -->
             <nav class="nav">
                 <a href="../about">О доме</a>
-                <a href="../history" class="active">История</a>
+                <a href="../history">История</a>
                 <a href="../enemies">Противники</a>
                 <a href="../news">Новости</a>
             </nav>
-            <div class="auth-action">
-                <a href="../login" class="btn-login" id="auth-btn">Войти</a>
+
+            <!-- Burger Menu Button -->
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <!-- Кнопка "Войти" (показывается когда не авторизован) -->
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login">Войти</a>
+            </div>
+
+            <!-- User Menu (показывается когда авторизован) -->
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <!-- Кнопка сообщений -->
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <!-- Кнопка уведомлений -->
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+
+                    <!-- Выпадающий список уведомлений -->
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Профиль пользователя -->
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
 
     <div class="page-header"
         style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('../assets/images/JimBeam-Magazin.jpg') center/cover no-repeat; background-position: center 73%;">
@@ -80,7 +158,7 @@
                         ним также было приобретено около 10 литров пепси в качестве запивона, который даже не пригодится
                         воинам.</p>
                     <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
-                        <img src="../assets/images/history1.jpg" alt="Великая битва"
+                        <img src="../assets/images/history1.png" alt="Великая битва"
                             style="width: 45%; max-width: 400px; border-radius: 8px;">
                     </div>
                     <p class="image-caption"
@@ -112,7 +190,7 @@
                         </div>
                     </div>
                     <p style="margin-top: 1rem;">Но противник был слишком силён. Дмитрий и Максим проиграли битву и
-                        отправились спать уже в полдень. Проспав до около 16 часов.</p>
+                        отправились спать уже в полдень, проспав до около 16 часов.</p>
                     <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
                         <img src="../assets/images/history4.jpg" alt="Максим спит"
                             style="width: 45%; max-width: 400px; border-radius: 8px;">
@@ -216,6 +294,149 @@
 
                         .logo-item:hover img {
                             transform: scale(1.1);
+                        }
+
+                        /* Lightbox Styles */
+                        .history-lightbox {
+                            display: none;
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(0, 0, 0, 0.95);
+                            z-index: 10000;
+                            justify-content: center;
+                            align-items: center;
+                            opacity: 0;
+                            transition: opacity 0.3s ease;
+                        }
+
+                        .history-lightbox.active {
+                            display: flex;
+                            opacity: 1;
+                        }
+
+                        .history-lightbox-content {
+                            position: relative;
+                            max-width: 90vw;
+                            max-height: 90vh;
+                            animation: lightboxZoomIn 0.3s ease;
+                        }
+
+                        @keyframes lightboxZoomIn {
+                            from {
+                                transform: scale(0.8);
+                                opacity: 0;
+                            }
+
+                            to {
+                                transform: scale(1);
+                                opacity: 1;
+                            }
+                        }
+
+                        .history-lightbox-content img {
+                            max-width: 90vw;
+                            max-height: 85vh;
+                            object-fit: contain;
+                            border-radius: 8px;
+                            box-shadow: 0 0 50px rgba(255, 23, 68, 0.3);
+                        }
+
+                        .history-lightbox-close {
+                            position: absolute;
+                            top: -40px;
+                            right: -10px;
+                            width: 35px;
+                            height: 35px;
+                            background: rgba(255, 23, 68, 0.8);
+                            border: none;
+                            border-radius: 50%;
+                            color: white;
+                            font-size: 24px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s ease;
+                        }
+
+                        .history-lightbox-close:hover {
+                            background: #ff1744;
+                            transform: scale(1.1);
+                        }
+
+                        .history-lightbox-caption {
+                            text-align: center;
+                            color: #ccc;
+                            margin-top: 15px;
+                            font-size: 0.95rem;
+                            max-width: 80vw;
+                        }
+
+                        /* Make timeline images clickable */
+                        .timeline-item img {
+                            cursor: pointer;
+                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                        }
+
+                        .timeline-item img:hover {
+                            transform: scale(1.02);
+                            box-shadow: 0 5px 25px rgba(255, 23, 68, 0.4);
+                        }
+
+                        /* Navigation arrows */
+                        .history-lightbox-nav {
+                            position: absolute;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            width: 50px;
+                            height: 50px;
+                            background: rgba(255, 23, 68, 0.6);
+                            border: none;
+                            border-radius: 50%;
+                            color: white;
+                            font-size: 24px;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s ease;
+                            z-index: 10001;
+                        }
+
+                        .history-lightbox-nav:hover {
+                            background: #ff1744;
+                        }
+
+                        .history-lightbox-prev {
+                            left: 20px;
+                        }
+
+                        .history-lightbox-next {
+                            right: 20px;
+                        }
+
+                        @media (max-width: 768px) {
+                            .history-lightbox-nav {
+                                width: 40px;
+                                height: 40px;
+                                font-size: 20px;
+                            }
+
+                            .history-lightbox-prev {
+                                left: 10px;
+                            }
+
+                            .history-lightbox-next {
+                                right: 10px;
+                            }
+
+                            .history-lightbox-close {
+                                top: -45px;
+                                right: 0;
+                            }
                         }
                     </style>
 
@@ -362,6 +583,59 @@
                 </div>
 
                 <div class="timeline-item">
+                    <h3>Третье заседание Дома Фальконе: утверждение гимна Дома Фальконе</h3>
+                    <div class="date">25-26 октября 2025</div>
+                    <p>Третье заседание Дома Фальконе знаменательно тем, что на нём впервые побывал кандидат на
+                        вступление в Дом
+                        Фальконе - Иван. До заседания Димоне де Патроне и Иван находились в нестабильных отношениях, но
+                        спустя
+                        пару пропущенных стаканчиков высокоградусных напитков, Димоне и Иван смогли найти общий язык и
+                        забыть
+                        прошлые обиды. Вечер прошёл в тёплой атмосфере, бойцы Дома Фальконе смогли насладиться компанией
+                        друг друга.
+                        В этот вечер также была проведена атака на чат украинцев города Оснабрюк в телеграме. Бойцы Дома
+                        Фальконе
+                        скоординированно действовали отстаивая интересы Дома Фальконе в виртуальном пространстве, а
+                        также нанося непоправимый
+                        ущерб имижду Дяди Лёши и его приспешников. В конце вечера, когда бойцы уже собирались
+                        расходиться, заиграл гимн Дома Фальконе. Антоне де Снюсоне и Димоне
+                        де Патроне исполнили ритуальный танец, который затем был опубликован в оффициальном
+                        телеграм-канале Кирилла "Кириллнатора"
+                        - Pr0nator4ik. Иван И Димоне де Патроне покинули Дом Фальконе вместе и на одном автобусе
+                        отправились домой.
+                    </p>
+
+                    <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                        <video width="40%" style="max-width: 600px; border-radius: 8px;" controls>
+                            <source src="../assets/images/history13.mp4" type="video/mp4">
+                            Ваш браузер не поддерживает видео
+                        </video>
+                    </div>
+                    <p class="image-caption"
+                        style="font-size:0.95rem; color:#bbbbbb; margin-top:0.75rem; text-align: center;">
+                        На видео: Ритуальный танец Антоне де Снюсоне и Димоне де Патроне под гимн Дома Фальконе "ПОСОСИ"
+                    </p>
+
+                    <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                        <video width="40%" style="max-width: 600px; border-radius: 8px;" controls>
+                            <source src="../assets/images/history14.mp4" type="video/mp4">
+                            Ваш браузер не поддерживает видео
+                        </video>
+                    </div>
+                    <p class="image-caption"
+                        style="font-size:0.95rem; color:#bbbbbb; margin-top:0.75rem; text-align: center;">
+                        На видео: Иван и Антоне де Снюсоне танцуют под трек "ПОСОСИ"
+                    </p>
+
+                    <p style="margin-top: 1rem;">Также примечателен тот факт, что перед началом заседания Дон Фальконе
+                        приобрёл свою
+                        JBL Charge 6 в синем цвете, которая с тех пор сопровождает Дона Фальконе на всех его вылазках и
+                        заседаниях Дома Фальконе.
+                    </p>
+
+                </div>
+
+                <div class="timeline-item">
                     <h3>А что дальше?</h3>
                     <div class="date">Настоящее время</div>
                     <p>Сегодня Дом Фальконе всё также продолжает существовать и проводить сражения каждую пятницу. В
@@ -399,9 +673,29 @@
         </section>
     </main>
 
+    <!-- Image Lightbox Modal -->
+    <div class="history-lightbox" id="historyLightbox">
+        <button class="history-lightbox-nav history-lightbox-prev" id="lightboxPrev">❮</button>
+        <div class="history-lightbox-content">
+            <button class="history-lightbox-close" id="lightboxClose">×</button>
+            <img src="" alt="" id="lightboxImage">
+            <p class="history-lightbox-caption" id="lightboxCaption"></p>
+        </div>
+        <button class="history-lightbox-nav history-lightbox-next" id="lightboxNext">❯</button>
+    </div>
+
     <footer class="site-footer">
         <div class="container">
-            <small>© Дом Фальконе — 2025. Все права защищены. Прям реально защищены.</small>
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
         </div>
     </footer>
 
@@ -410,7 +704,561 @@
         <span class="btn-text">Связаться с Домом</span>
     </a>
 
-    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/main.js?v=6"></script>
+    <script>
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        const token = localStorage.getItem('auth_token');
+        let notificationsInterval;
+        let messagesCheckInterval;
+        let lastMessageCount = 0;
+
+        // ============ SYNCHRONOUS AUTH CHECK (prevents flash) ============
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        // ============ ЗАГРУЗКА HEADER ============
+        async function loadUserHeader() {
+            if (!token) {
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const currentUser = await res.json();
+                    document.getElementById('auth-action').style.display = 'none';
+                    document.getElementById('user-menu').style.display = 'flex';
+                    document.getElementById('header-display-name').textContent = currentUser.display_name || currentUser.email.split('@')[0];
+                    document.getElementById('header-points').textContent = currentUser.points || 0;
+
+                    const avatar = document.getElementById('header-avatar');
+                    if (currentUser.avatar_url) {
+                        avatar.src = currentUser.avatar_url;
+                    } else {
+                        const initial = currentUser.display_name ? currentUser.display_name[0].toUpperCase() : 'U';
+                        avatar.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23ff1744' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+                    }
+
+                    // Запускаем загрузку уведомлений и сообщений
+                    loadNotifications();
+                    loadUnreadMessagesCount();
+
+                    if (notificationsInterval) clearInterval(notificationsInterval);
+                    notificationsInterval = setInterval(loadNotifications, 30000);
+
+                    if (messagesCheckInterval) clearInterval(messagesCheckInterval);
+                    messagesCheckInterval = setInterval(checkNewMessages, 5000);
+                } else {
+                    localStorage.removeItem('auth_token');
+                    document.getElementById('auth-action').style.display = 'block';
+                    document.getElementById('user-menu').style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+            }
+        }
+
+        // ============ УВЕДОМЛЕНИЯ ============
+        let lastNotificationId = 0; // Добавьте эту переменную глобально
+
+        async function loadNotifications() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/notifications", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateNotificationBadge(data.unread_count);
+                    renderNotifications(data.notifications);
+
+                    // Проверяем новые уведомления для toast
+                    if (data.notifications && data.notifications.length > 0) {
+                        const latestNotif = data.notifications[0];
+
+                        // Если это новое уведомление и оно непрочитанное
+                        if (latestNotif.id > lastNotificationId && latestNotif.is_read === 0) {
+                            showNotificationToast(
+                                latestNotif.type,
+                                latestNotif.title,
+                                latestNotif.message,
+                                latestNotif.id,
+                                latestNotif.related_id
+                            );
+                            lastNotificationId = latestNotif.id;
+                        } else if (lastNotificationId === 0) {
+                            // Инициализация при первой загрузке
+                            lastNotificationId = latestNotif.id;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Load notifications error:', err);
+            }
+        }
+
+        function showNotificationToast(type, title, message, notificationId, relatedId) {
+            // Удаляем предыдущий toast если есть
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Определяем иконку в зависимости от типа
+            let icon = '🔔';
+            let redirectUrl = null;
+            let soundFile = 'notification';
+
+            switch (type) {
+                case 'new_message':
+                    icon = '💬';
+                    soundFile = 'message-notification';
+                    redirectUrl = '../messages';
+                    break;
+                case 'news_like':
+                    icon = '❤️';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_comment':
+                    icon = '💭';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_friend':
+                    icon = '📰';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_deleted':
+                    icon = '🗑️';
+                    redirectUrl = '../news';
+                    break;
+                case 'friend_request':
+                    icon = '👥';
+                    redirectUrl = '../dashboard?tab=friends';
+                    break;
+                default:
+                    icon = '🔔';
+            }
+
+            // Проигрываем звук
+            playNotificationSound(soundFile);
+
+            // Создаем toast
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-name">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+            // Обработчик клика
+            toast.addEventListener('click', async () => {
+                // Отмечаем уведомление как прочитанное
+                try {
+                    await fetch(API_BASE + "/notifications/read", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ notificationId })
+                    });
+                    await loadNotifications();
+                } catch (err) {
+                    console.error('Mark notification read error:', err);
+                }
+
+                // Переходим по ссылке
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
+
+            document.body.appendChild(toast);
+
+            // Автоматически скрываем через 5 секунд
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function playNotificationSound(soundType) {
+            try {
+                const soundId = soundType === 'message-notification'
+                    ? 'message-notification-sound'
+                    : 'notification-sound';
+
+                const audio = document.getElementById(soundId);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.volume = 0.5; // Громкость 50%
+                    audio.play().catch(err => {
+                        console.log('Audio play prevented:', err);
+                    });
+                }
+            } catch (err) {
+                console.error('Play sound error:', err);
+            }
+        }
+
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notification-badge');
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notifications-list');
+
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = '<div class="no-notifications">Нет уведомлений</div>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(notif => {
+                const time = formatNotificationTime(notif.created_at);
+                const unreadClass = notif.is_read === 0 ? 'unread' : '';
+
+                return `
+            <div class="notification-item ${unreadClass}" onclick="handleNotificationClick(${notif.id}, ${notif.related_id}, '${notif.type}')">
+                <div class="notification-title">${notif.title}</div>
+                <div class="notification-message">${notif.message}</div>
+                <div class="notification-time">${time}</div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function formatNotificationTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Только что';
+            if (minutes < 60) return `${minutes} мин назад`;
+            if (hours < 24) return `${hours} ч назад`;
+            if (days < 7) return `${days} д назад`;
+
+            return new Date(timestamp).toLocaleDateString('ru-RU');
+        }
+
+        async function handleNotificationClick(notificationId, relatedId, type) {
+            try {
+                await fetch(API_BASE + "/notifications/read", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ notificationId })
+                });
+
+                await loadNotifications();
+                document.getElementById('notifications-dropdown').classList.remove('active');
+
+                // Переход к связанному контенту
+                if (type === 'new_message' && relatedId) {
+                    window.location.href = `../messages`;
+                } else if (type.includes('news') && relatedId) {
+                    window.location.href = `../news`;
+                }
+            } catch (err) {
+                console.error('Handle notification click error:', err);
+            }
+        }
+
+        // ============ СООБЩЕНИЯ ============
+        async function loadUnreadMessagesCount() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Load unread messages error:', err);
+            }
+        }
+
+        function updateMessagesBadge(count) {
+            const badge = document.getElementById('messages-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        async function checkNewMessages() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.unread_count > lastMessageCount && lastMessageCount > 0) {
+                        const chatsRes = await fetch(API_BASE + "/chats", {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+
+                        if (chatsRes.ok) {
+                            const chatsData = await chatsRes.json();
+                            const latestChat = chatsData.chats.find(c => c.unread_count > 0);
+
+                            if (latestChat && latestChat.last_message) {
+                                showMessageToast(
+                                    latestChat.other_user.name,
+                                    latestChat.other_user.avatar,
+                                    latestChat.last_message.content,
+                                    latestChat.chat_id,
+                                    latestChat.other_user.id
+                                );
+                            }
+                        }
+                    }
+
+                    lastMessageCount = data.unread_count;
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Check new messages error:', err);
+            }
+        }
+
+        function showMessageToast(senderName, senderAvatar, messagePreview, chatId, senderId) {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Проигрываем звук сообщения
+            playNotificationSound('message-notification');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <img src="${senderAvatar || getDefaultAvatar(senderName)}" class="toast-avatar">
+        <div class="toast-content">
+            <div class="toast-name">${senderName}</div>
+            <div class="toast-message">${messagePreview}</div>
+        </div>
+    `;
+
+            toast.addEventListener('click', () => {
+                window.location.href = `../messages?chatWith=${senderId}`;
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function getDefaultAvatar(name) {
+            const initial = name ? name[0].toUpperCase() : '?';
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Crect fill='%23ff1744' width='45' height='45'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+        }
+
+        // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+        document.getElementById('notification-bell')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifications-dropdown');
+            dropdown.classList.toggle('active');
+            if (dropdown.classList.contains('active')) {
+                loadNotifications();
+            }
+        });
+
+        document.getElementById('mark-all-read-btn')?.addEventListener('click', async () => {
+            try {
+                await fetch(API_BASE + "/notifications/read-all", {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                await loadNotifications();
+            } catch (err) {
+                console.error('Mark all read error:', err);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notifications-dropdown');
+            const bell = document.getElementById('notification-bell');
+            if (dropdown && !dropdown.contains(e.target) && !bell.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // ============ ИНИЦИАЛИЗАЦИЯ ============
+        document.addEventListener('DOMContentLoaded', loadUserHeader);
+
+        // ============ LIGHTBOX FUNCTIONALITY ============
+        (function initLightbox() {
+            const lightbox = document.getElementById('historyLightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxCaption = document.getElementById('lightboxCaption');
+            const lightboxClose = document.getElementById('lightboxClose');
+            const lightboxPrev = document.getElementById('lightboxPrev');
+            const lightboxNext = document.getElementById('lightboxNext');
+
+            // Collect all images from timeline
+            let images = [];
+            let currentIndex = 0;
+
+            function collectImages() {
+                images = [];
+                const timelineImages = document.querySelectorAll('.timeline-item img');
+                timelineImages.forEach((img, index) => {
+                    // Find the caption if exists
+                    let caption = '';
+                    const parent = img.closest('div[style*="display: flex"]');
+                    if (parent) {
+                        const captionEl = parent.nextElementSibling;
+                        if (captionEl && captionEl.classList.contains('image-caption')) {
+                            caption = captionEl.textContent || '';
+                        }
+                    }
+                    // Also check if caption is a sibling inside the same container
+                    const container = img.parentElement;
+                    const siblingCaption = container.querySelector('.image-caption');
+                    if (siblingCaption) {
+                        caption = siblingCaption.textContent || '';
+                    }
+
+                    images.push({
+                        src: img.src,
+                        alt: img.alt,
+                        caption: caption || img.alt
+                    });
+
+                    // Add click handler
+                    img.addEventListener('click', () => openLightbox(index));
+                });
+            }
+
+            function openLightbox(index) {
+                currentIndex = index;
+                updateLightboxImage();
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function updateLightboxImage() {
+                if (images[currentIndex]) {
+                    lightboxImage.src = images[currentIndex].src;
+                    lightboxImage.alt = images[currentIndex].alt;
+                    lightboxCaption.textContent = images[currentIndex].caption;
+                }
+                // Update navigation visibility
+                lightboxPrev.style.display = images.length > 1 ? 'flex' : 'none';
+                lightboxNext.style.display = images.length > 1 ? 'flex' : 'none';
+            }
+
+            function navigatePrev() {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                updateLightboxImage();
+            }
+
+            function navigateNext() {
+                currentIndex = (currentIndex + 1) % images.length;
+                updateLightboxImage();
+            }
+
+            // Event listeners
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightboxPrev.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigatePrev();
+            });
+            lightboxNext.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigateNext();
+            });
+
+            // Close on background click
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+
+                switch (e.key) {
+                    case 'Escape':
+                        closeLightbox();
+                        break;
+                    case 'ArrowLeft':
+                        navigatePrev();
+                        break;
+                    case 'ArrowRight':
+                        navigateNext();
+                        break;
+                }
+            });
+
+            // Initialize on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', collectImages);
+            } else {
+                collectImages();
+            }
+        })();
+    </script>
+
+    <!-- Audio for notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="../assets/audio/notification.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="message-notification-sound" preload="auto">
+        <source src="../assets/audio/message-notification.mp3" type="audio/mpeg">
+    </audio>
+    <script src="../assets/js/analytics.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>404 - Dom Falcone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
+    <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <style>
+        html {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .error-page {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(80, 0, 0, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(100, 15, 30, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(50, 0, 0, 0.12) 0%, transparent 50%);
+            animation: pulseBackground 8s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulseBackground {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(139, 0, 0, 0.4);
+            border-radius: 50%;
+            animation: floatParticle 15s infinite;
+        }
+
+        @keyframes floatParticle {
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .error-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(18, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(139, 0, 0, 0.5);
+            box-shadow:
+                0 0 60px rgba(139, 0, 0, 0.4),
+                0 0 80px rgba(50, 0, 0, 0.15),
+                inset 0 0 40px rgba(80, 0, 0, 0.08);
+            max-width: 750px;
+            width: 100%;
+            animation: containerGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes containerGlow {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 40px rgba(80, 0, 0, 0.25),
+                    0 0 80px rgba(50, 0, 0, 0.12),
+                    inset 0 0 30px rgba(60, 0, 0, 0.06);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 50px rgba(100, 15, 30, 0.3),
+                    0 0 100px rgba(80, 0, 0, 0.18),
+                    inset 0 0 40px rgba(80, 0, 0, 0.08);
+            }
+        }
+
+        .error-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        .error-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px rgba(255, 23, 68, 0.5));
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff1744 0%, #8b0000 50%, #c41e3a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            filter: drop-shadow(0 0 30px rgba(139, 0, 0, 0.8));
+            margin: 0;
+            line-height: 1;
+            animation: errorPulse 2s ease-in-out infinite;
+            letter-spacing: -0.05em;
+        }
+
+        @keyframes errorPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px rgba(139, 0, 0, 0.8));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 50px rgba(196, 30, 58, 1));
+            }
+        }
+
+        .error-subtitle {
+            font-size: 1.5rem;
+            color: #ff1744;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(255, 23, 68, 0.5);
+        }
+
+        .error-message {
+            font-size: 1.3rem;
+            color: #a0a0a0;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .error-message .highlight {
+            color: #c41e3a;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .hymn-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139, 0, 0, 0.3);
+        }
+
+        .hymn-label {
+            font-size: 0.9rem;
+            color: #8b0000;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .hymn-player {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(139, 0, 0, 0.3);
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b0000, #c41e3a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .play-btn:hover {
+            background: linear-gradient(135deg, #c41e3a, #ff1744);
+            box-shadow: 0 0 25px rgba(196, 30, 58, 0.6);
+            transform: scale(1.05);
+        }
+
+        .play-btn .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 14px solid white;
+            border-top: 9px solid transparent;
+            border-bottom: 9px solid transparent;
+            margin-left: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn.playing .play-icon {
+            width: 14px;
+            height: 16px;
+            border: none;
+            background: linear-gradient(90deg, white 0%, white 35%, transparent 35%, transparent 65%, white 65%, white 100%);
+            margin-left: 0;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 6px;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 3px;
+            cursor: pointer;
+            overflow: hidden;
+            max-width: 200px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8b0000, #c41e3a);
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+
+        .hymn-title {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .btn-home {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 2px solid rgba(139, 0, 0, 0.5);
+            border-radius: 50px;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-home:hover {
+            border-color: #c41e3a;
+            color: #c41e3a;
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .error-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .error-code {
+                font-size: 5rem;
+            }
+
+            .error-subtitle {
+                font-size: 1.2rem;
+                letter-spacing: 0.15em;
+            }
+
+            .error-message {
+                font-size: 1.1rem;
+            }
+
+            .hymn-player {
+                flex-wrap: wrap;
+                padding: 1rem;
+            }
+
+            .progress-container {
+                width: 100%;
+                max-width: none;
+                order: 3;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-page">
+        <div class="particles" id="particles"></div>
+
+        <div class="error-container" id="error-container">
+            <div class="error-logo">
+                <img src="../assets/images/Falcone-circle.png" alt="Dom Falcone">
+            </div>
+
+            <h1 class="error-code">404</h1>
+            <div class="error-subtitle">Error</div>
+
+            <p class="error-message">
+                <span class="highlight">Сайт деактивирован</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                particle.style.width = (2 + Math.random() * 4) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+
+    <script src="../assets/js/analytics.js"></script>
+</body>
+
+</html>

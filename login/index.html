@@ -8,8 +8,552 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css?v=1">
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
     <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <style>
+        /* Login-specific styles only - global styles are in style.css */
+        .page-header {
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background-size: 100% auto;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-bottom: 4rem;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.3), var(--color-bg));
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: var(--color-text-muted);
+            font-size: 1.2rem;
+        }
+
+        .login-section {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 0;
+        }
+
+        .login-container {
+            background: var(--color-surface);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            margin-bottom: 2rem;
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* User Selection Grid - Flex Layout */
+        .user-selection-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 3rem;
+            transition: all 0.5s ease-out;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .user-btn {
+            background: transparent;
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            padding: 1.1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-main);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .user-btn:hover {
+            background: var(--color-accent);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 110, 64, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .user-btn[data-user="Gast"] {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .user-btn[data-user="Gast"]:hover {
+            background: var(--color-primary);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.4);
+        }
+
+        .user-btn.selected {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-glow);
+            transform: scale(1.05);
+        }
+
+        .user-btn[data-user="Gast"].selected {
+            background: var(--color-primary);
+            box-shadow: 0 0 20px rgba(255, 23, 68, 0.6);
+        }
+
+        /* Режим гостя - показываем кнопку Gast вверху */
+        .login-container.guest-mode .user-selection-grid {
+            position: relative;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .login-container.guest-mode .user-btn:not([data-user="Gast"]) {
+            display: none;
+        }
+
+        .login-container.guest-mode .user-btn[data-user="Gast"] {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: white;
+            box-shadow: 0 0 30px rgba(213, 0, 0, 0.5);
+            border-color: transparent;
+            pointer-events: auto;
+            cursor: pointer;
+            width: auto;
+            max-width: none;
+            animation: guestButtonRise 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                guestGlowPulse 2s ease-in-out infinite 0.7s;
+        }
+
+        @keyframes guestButtonRise {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(80px) scale(0.7);
+                filter: blur(4px);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-10px) scale(1.05);
+                filter: blur(0);
+            }
+
+            70% {
+                transform: translateX(-50%) translateY(5px) scale(0.98);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
+        @keyframes guestGlowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(213, 0, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(255, 23, 68, 0.8), 0 0 80px rgba(213, 0, 0, 0.4);
+            }
+        }
+
+        .login-container.guest-mode .section-title {
+            display: none;
+        }
+
+        /* Режим пользователя - показываем выбранную кнопку вверху */
+        .login-container.user-mode .user-selection-grid {
+            position: relative;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .login-container.user-mode .user-btn:not(.selected-user) {
+            display: none;
+        }
+
+        .login-container.user-mode .user-btn.selected-user {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 0 30px rgba(255, 110, 64, 0.5);
+            border-color: transparent;
+            pointer-events: auto;
+            cursor: pointer;
+            width: auto;
+            max-width: none;
+            animation: userButtonRise 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                glowPulse 2s ease-in-out infinite 0.7s;
+        }
+
+        .login-container.user-mode .section-title {
+            display: none;
+        }
+
+        @keyframes userButtonRise {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(80px) scale(0.7);
+                filter: blur(4px);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-10px) scale(1.05);
+                filter: blur(0);
+            }
+
+            70% {
+                transform: translateX(-50%) translateY(5px) scale(0.98);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(255, 110, 64, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(255, 110, 64, 0.8), 0 0 80px rgba(255, 23, 68, 0.4);
+            }
+        }
+
+        /* Named User Password Form */
+        .named-user-form {
+            display: none;
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 0 2rem;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .named-user-form.active {
+            display: block;
+        }
+
+        .named-user-form .form-group input {
+            padding: 1.3rem 1.2rem;
+            font-size: 1.1rem;
+            min-width: 350px;
+        }
+
+        .named-user-info {
+            display: none;
+        }
+
+        /* Guest Auth Container */
+        .guest-auth-container {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+            transition: all 0.5s ease-out;
+        }
+
+        .guest-auth-container.active {
+            display: block;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: -2rem 0 1.5rem 0;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-text-muted);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-main);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .auth-form {
+            display: none;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: var(--font-main);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .error-message {
+            color: var(--color-primary);
+            font-size: 0.9rem;
+            min-height: 1.2em;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #4caf50;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            outline: none;
+            text-align: center;
+            min-width: 200px;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 23, 68, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--color-text-muted);
+            padding: 0.3rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-main);
+            margin-top: 0.5rem;
+        }
+
+        .btn-back:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* Floating Contact Button */
+        .floating-contact-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient-primary);
+            border-radius: 50px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-decoration: none;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            overflow: hidden;
+            width: 50px;
+            height: 50px;
+        }
+
+        .floating-contact-btn img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            flex-shrink: 0;
+            filter: brightness(0) invert(1);
+            transition: transform 0.6s ease;
+        }
+
+        .floating-contact-btn .btn-text {
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.6s ease;
+            width: 0;
+            overflow: hidden;
+            margin-top: -1px;
+            margin-left: -8px;
+        }
+
+        .floating-contact-btn:hover {
+            width: 245px;
+            padding: 12px 20px;
+            gap: 12px;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(255, 23, 68, 0.5);
+        }
+
+        .floating-contact-btn:hover img {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .floating-contact-btn:hover .btn-text {
+            opacity: 1;
+            transform: translateX(0);
+            width: auto;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .loading {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+            }
+
+            .user-selection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -36,25 +580,102 @@
             <div class="brand">
                 <a href="../homepage">
                     <div class="logo-mark"
-                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;">
-                    </div>
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
                     <span class="brand-title">Dom Falcone</span>
                 </a>
             </div>
+
+            <!-- Desktop Navigation -->
             <nav class="nav">
                 <a href="../about">О доме</a>
                 <a href="../history">История</a>
                 <a href="../enemies">Противники</a>
                 <a href="../news">Новости</a>
             </nav>
-            <div class="auth-action">
-                <a href="../login" class="btn-login active" id="auth-btn">Войти</a>
+
+            <!-- Burger Menu Button -->
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <!-- Кнопка "Войти" (показывается когда не авторизован) -->
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login active">Войти</a>
+            </div>
+
+            <!-- User Menu (показывается когда авторизован) -->
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <!-- Кнопка сообщений -->
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <!-- Кнопка уведомлений -->
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+
+                    <!-- Выпадающий список уведомлений -->
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Профиль пользователя -->
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </header>
 
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
+
     <div class="page-header"
-        style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url('/assets/images/q1-background.jpg') center/cover no-repeat; background-position: center 21%;">
+        style="background-image: url('../assets/images/q1-background.jpg'); background-position: center 18%;">
         <div class="container">
             <h1>Идентификация</h1>
             <p>Назовите себя, чтобы войти в Дом</p>
@@ -64,28 +685,102 @@
     <main class="content-section login-section">
         <div class="container">
             <div class="login-container animate-fade-up">
-                <h2 class="section-title underline-text">Выберите личность</h2>
+                <h2 class="section-title">Выберите личность</h2>
 
-                <div class="user-selection-grid">
-                    <button class="user-btn" data-user="Don Falcone">Don Falcone</button>
-                    <button class="user-btn" data-user="Antone Snusone">Antone Snusone</button>
-                    <button class="user-btn" data-user="Dimone de Patrone">Dimone de Patrone</button>
-                    <button class="user-btn" data-user="Maxone Povarone">Maxone Povarone</button>
-                    <button class="user-btn" data-user="Gast">Gast</button>
+                <!-- User Selection Grid -->
+                <div class="user-selection-grid" id="user-selection">
+                    <div class="button-row">
+                        <button class="user-btn" data-user="Don Falcone" data-email="kolyanchik497@gmail.com">Don
+                            Falcone</button>
+                        <button class="user-btn" data-user="Antone Snusone"
+                            data-email="antonprivate762@gmail.com">Antone Snusone</button>
+                    </div>
+                    <div class="button-row">
+                        <button class="user-btn" data-user="Dimone de Patrone" data-email="dmuntyan777@gmail.com">Dimone
+                            de Patrone</button>
+                        <button class="user-btn" data-user="Maxone Povarone" data-email="hitstar228@gmail.com">Maxone
+                            Povarone</button>
+                        <button class="user-btn" data-user="Gast" data-email="">Gast</button>
+                    </div>
                 </div>
 
-                <div class="login-form-group">
-                    <input type="password" id="password-input" placeholder="Введите пароль" disabled>
-                    <div class="error-message" id="login-error"></div>
-                    <button id="login-submit-btn" class="btn btn-primary" disabled>Войти</button>
+                <!-- Named User Password Form -->
+                <div class="named-user-form" id="named-user-form">
+                    <div class="named-user-info">
+                        <p>Вход как: <span id="selected-username"></span></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="named-password">Пароль</label>
+                        <input type="password" id="named-password" placeholder="Введите пароль"
+                            autocomplete="current-password">
+                    </div>
+                    <div class="error-message" id="named-error"></div>
+                    <button class="btn btn-primary" id="named-login-btn">Войти</button>
+                    <button class="btn-back" id="back-from-named">← Назад</button>
+                </div>
+
+                <!-- Guest Auth Container -->
+                <div class="guest-auth-container" id="guest-auth-container">
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" data-tab="login">Вход</button>
+                        <button class="tab-btn" data-tab="register">Регистрация</button>
+                    </div>
+
+                    <div id="login-form" class="auth-form active">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Пароль</label>
+                            <input type="password" id="login-password" placeholder="Введите пароль"
+                                autocomplete="current-password">
+                        </div>
+                        <div class="error-message" id="login-error"></div>
+                        <button class="btn btn-primary" id="login-btn">Войти</button>
+                    </div>
+
+                    <div id="register-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="reg-name">Отображаемое имя</label>
+                            <input type="text" id="reg-name" placeholder="Как вас называть?">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">Email</label>
+                            <input type="email" id="reg-email" placeholder="your@email.com" autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">Пароль</label>
+                            <input type="password" id="reg-password" placeholder="Создайте пароль"
+                                autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password-confirm">Подтвердите пароль</label>
+                            <input type="password" id="reg-password-confirm" placeholder="Повторите пароль"
+                                autocomplete="new-password">
+                        </div>
+                        <div class="error-message" id="register-error"></div>
+                        <div class="success-message" id="register-success"></div>
+                        <button class="btn btn-primary" id="register-btn">Зарегистрироваться</button>
+                    </div>
+
+                    <button class="btn-back" id="back-from-guest">← Назад</button>
                 </div>
             </div>
         </div>
     </main>
-
     <footer class="site-footer">
         <div class="container">
-            <small>© Дом Фальконе — 2025. Все права защищены. Прям реально защищены.</small>
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
         </div>
     </footer>
 
@@ -94,7 +789,378 @@
         <span class="btn-text">Связаться с Домом</span>
     </a>
 
-    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/main.js?v=6"></script>
+
+    <script>
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        let token = localStorage.getItem('auth_token') || "";
+        let selectedEmail = "";
+        let selectedUsername = "";
+
+        // ============ SYNCHRONOUS AUTH CHECK (prevents flash) ============
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (token) {
+                checkTokenAndRedirect();
+            }
+            setupEventListeners();
+        });
+
+        async function checkTokenAndRedirect() {
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    window.location.href = '../dashboard';
+                } else {
+                    localStorage.removeItem('auth_token');
+                    token = "";
+                }
+            } catch (err) {
+                console.error('Token check error:', err);
+                localStorage.removeItem('auth_token');
+                token = "";
+            }
+        }
+
+        function setupEventListeners() {
+            // User selection buttons
+            document.querySelectorAll('.user-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => selectUser(e.target));
+            });
+
+            // Guest tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
+            });
+
+            // Back buttons
+            document.getElementById('back-from-named').addEventListener('click', resetToSelection);
+            document.getElementById('back-from-guest').addEventListener('click', resetToSelection);
+
+            // Form submissions
+            document.getElementById('named-login-btn').addEventListener('click', namedUserLogin);
+            document.getElementById('login-btn').addEventListener('click', guestLogin);
+            document.getElementById('register-btn').addEventListener('click', register);
+
+            // Enter key handling
+            document.getElementById('named-password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') namedUserLogin();
+            });
+            document.getElementById('login-password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') guestLogin();
+            });
+            document.getElementById('reg-password-confirm').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') register();
+            });
+        }
+
+        function selectUser(btn) {
+            const username = btn.dataset.user;
+            const email = btn.dataset.email;
+            const loginContainer = document.querySelector('.login-container');
+
+            // If already in guest-mode and clicking Gast again, go back
+            if (username === 'Gast' && loginContainer.classList.contains('guest-mode')) {
+                resetToSelection();
+                return;
+            }
+
+            // If already in user-mode and clicking the selected user again, go back
+            if (username !== 'Gast' && loginContainer.classList.contains('user-mode') && btn.classList.contains('selected-user')) {
+                resetToSelection();
+                return;
+            }
+
+            // Reset all buttons
+            document.querySelectorAll('.user-btn').forEach(b => {
+                b.classList.remove('selected');
+                b.classList.remove('selected-user');
+            });
+
+            if (username === 'Gast') {
+                // Show guest auth forms
+                btn.classList.add('selected');
+                loginContainer.classList.remove('user-mode');
+                loginContainer.classList.add('guest-mode');
+                document.getElementById('guest-auth-container').classList.add('active');
+                document.getElementById('named-user-form').classList.remove('active');
+            } else {
+                // Show named user password form with fly-up animation
+                btn.classList.add('selected-user');
+                loginContainer.classList.remove('guest-mode');
+                loginContainer.classList.add('user-mode');
+
+                selectedEmail = email;
+                selectedUsername = username;
+                document.getElementById('selected-username').textContent = username;
+
+                // Show the password form with animation
+                document.getElementById('guest-auth-container').classList.remove('active');
+                document.getElementById('named-user-form').classList.add('active');
+
+                // Focus on password after animation
+                setTimeout(() => {
+                    document.getElementById('named-password').focus();
+                }, 500);
+            }
+        }
+
+        function resetToSelection() {
+            // Clear selections
+            document.querySelectorAll('.user-btn').forEach(b => {
+                b.classList.remove('selected');
+                b.classList.remove('selected-user');
+            });
+            selectedEmail = "";
+            selectedUsername = "";
+
+            // Remove mode classes
+            const loginContainer = document.querySelector('.login-container');
+            loginContainer.classList.remove('guest-mode');
+            loginContainer.classList.remove('user-mode');
+
+            // Hide all forms
+            document.getElementById('named-user-form').classList.remove('active');
+            document.getElementById('guest-auth-container').classList.remove('active');
+
+            // Clear messages and inputs
+            clearMessages();
+            clearInputs();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+
+            document.getElementById('login-form').classList.toggle('active', tab === 'login');
+            document.getElementById('register-form').classList.toggle('active', tab === 'register');
+
+            clearMessages();
+        }
+
+        function clearMessages() {
+            document.getElementById('named-error').textContent = '';
+            document.getElementById('login-error').textContent = '';
+            document.getElementById('register-error').textContent = '';
+            document.getElementById('register-success').textContent = '';
+        }
+
+        function clearInputs() {
+            document.getElementById('named-password').value = '';
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+            document.getElementById('reg-password-confirm').value = '';
+        }
+
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+
+            if (loading) {
+                btn.disabled = true;
+                btn.textContent = 'Загрузка...';
+            } else {
+                btn.disabled = false;
+                if (btnId === 'named-login-btn' || btnId === 'login-btn') {
+                    btn.textContent = 'Войти';
+                } else if (btnId === 'register-btn') {
+                    btn.textContent = 'Зарегистрироваться';
+                }
+            }
+        }
+
+        // Named user login (predefined email)
+        async function namedUserLogin() {
+            clearMessages();
+
+            const password = document.getElementById('named-password').value;
+
+            if (!password) {
+                document.getElementById('named-error').textContent = 'Введите пароль';
+                return;
+            }
+
+            setLoading('named-login-btn', true);
+
+            try {
+                const res = await fetch(API_BASE + "/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: selectedEmail, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.token) {
+                    token = data.token;
+                    localStorage.setItem('auth_token', token);
+
+                    setTimeout(() => {
+                        window.location.href = '../dashboard';
+                    }, 100);
+                } else {
+                    document.getElementById('named-error').textContent = data.error || 'Неверный пароль';
+                }
+            } catch (err) {
+                console.error('Named login error:', err);
+                document.getElementById('named-error').textContent = 'Ошибка подключения к серверу';
+            } finally {
+                setLoading('named-login-btn', false);
+            }
+        }
+
+        // Guest login (custom email)
+        async function guestLogin() {
+            clearMessages();
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                document.getElementById('login-error').textContent = 'Заполните все поля';
+                return;
+            }
+
+            setLoading('login-btn', true);
+
+            try {
+                const res = await fetch(API_BASE + "/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.token) {
+                    token = data.token;
+                    localStorage.setItem('auth_token', token);
+
+                    setTimeout(() => {
+                        window.location.href = '../dashboard';
+                    }, 100);
+                } else {
+                    // Специальная обработка неподтверждённого email
+                    if (data.email_not_verified) {
+                        document.getElementById('login-error').innerHTML =
+                            data.error + '<br><a href="#" onclick="resendVerification(\'' + (data.email || email) + '\'); return false;" style="color: var(--color-primary); text-decoration: underline; cursor: pointer;">Отправить письмо повторно</a>';
+                    } else {
+                        document.getElementById('login-error').textContent = data.error || 'Неверный email или пароль';
+                    }
+                }
+            } catch (err) {
+                console.error('Guest login error:', err);
+                document.getElementById('login-error').textContent = 'Ошибка подключения к серверу';
+            } finally {
+                setLoading('login-btn', false);
+            }
+        }
+
+        // Добавьте эту функцию после guestLogin()
+
+        async function resendVerification(email) {
+            if (!email) return;
+
+            try {
+                const res = await fetch(API_BASE + "/resend-verification", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    document.getElementById('login-error').innerHTML =
+                        '<span style="color: #4caf50;">' + (data.message || 'Письмо отправлено! Проверьте почту.') + '</span>';
+                } else {
+                    document.getElementById('login-error').textContent = data.error || 'Ошибка отправки письма';
+                }
+            } catch (err) {
+                console.error('Resend error:', err);
+                document.getElementById('login-error').textContent = 'Ошибка подключения к серверу';
+            }
+        }
+
+        // Guest registration
+        async function register() {
+            clearMessages();
+
+            const displayName = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-password-confirm').value;
+
+            if (!email || !password) {
+                document.getElementById('register-error').textContent = 'Заполните все обязательные поля';
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('register-error').textContent = 'Введите корректный email';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                document.getElementById('register-error').textContent = 'Пароли не совпадают';
+                return;
+            }
+
+            if (password.length < 8) {
+                document.getElementById('register-error').textContent = 'Пароль должен содержать минимум 8 символов';
+                return;
+            }
+
+            setLoading('register-btn', true);
+
+            try {
+                const res = await fetch(API_BASE + "/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password, displayName })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    document.getElementById('register-success').textContent = data.message || 'Регистрация успешна!';
+                    clearInputs();
+
+                    setTimeout(() => {
+                        switchTab('login');
+                        document.getElementById('login-email').value = email;
+                    }, 2000);
+                } else {
+                    document.getElementById('register-error').textContent = data.error || 'Ошибка регистрации';
+                }
+            } catch (err) {
+                document.getElementById('register-error').textContent = 'Ошибка подключения к серверу';
+                console.error(err);
+            } finally {
+                setLoading('register-btn', false);
+            }
+        }
+    </script>
+    <script src="../assets/js/analytics.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользовательское соглашение | Dom Falcone</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
+
+    <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="loader-text">Ждать. Идет загрузка.</div>
+            <div class="loader-hymn-section">
+                <div class="loader-hymn-label">Гимн Дома Фальконе</div>
+                <div class="loader-player-container">
+                    <div class="loader-play-btn" id="loader-play-btn">
+                        <div class="loader-play-icon"></div>
+                    </div>
+                    <div class="loader-progress-container">
+                        <div class="loader-progress-bar" id="loader-progress"></div>
+                    </div>
+                </div>
+                <audio id="loader-audio" src="../assets/audio/hymn.mp3"></audio>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <a href="../homepage">
+                    <div class="logo-mark"
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
+                    <span class="brand-title">Dom Falcone</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="nav">
+                <a href="../about">О доме</a>
+                <a href="../history">История</a>
+                <a href="../enemies">Противники</a>
+                <a href="../news">Новости</a>
+            </nav>
+
+            <!-- Burger Menu Button -->
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <!-- Кнопка "Войти" (показывается когда не авторизован) -->
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login">Войти</a>
+            </div>
+
+            <!-- User Menu (показывается когда авторизован) -->
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <!-- Кнопка сообщений -->
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <!-- Кнопка уведомлений -->
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+
+                    <!-- Выпадающий список уведомлений -->
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Профиль пользователя -->
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="agreement-section">
+        <div class="agreement-container">
+            <div style="text-align: center;">
+                <h1 class="page-title"
+                    style="display: inline-block; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    Пользовательское соглашение</h1>
+            </div>
+
+            <div class="agreement-text">
+                <h2>Общие положения</h2>
+                <p>Настоящее Пользовательское соглашение регулирует отношения между Домом Фальконе — великим братством,
+                    возникшим в ночь Великой Битвы 4–5 октября 2025 года — и любым пользователем, который посмел зайти
+                    на официальный веб-сайт Дома Фальконе.</p>
+                <p>Заходя на Сайт, Вы solemnly swear (или по-простому: «клянётесь») соблюдать правила, уважать Дома
+                    Фальконе, не вызывать гнев Дона и не нарушать сакральные традиции.</p>
+                <p>Если Вы не согласны с Соглашением — пожалуйста, немедленно покиньте Сайт, пока на Вас не обратил
+                    внимание Антоне Снюсоне.</p>
+
+                <h2>1. Кто такие мы (для протокола)</h2>
+                <p>Дом Фальконе — это боевое братство, прошедшее через огонь, воду и 1,5-литровую бутылку Джим Бима по
+                    акции.</p>
+                <p>Мы — сообщество, созданное такими героями как:</p>
+                <ul>
+                    <li>Дон Фальконе — величайший из величайших</li>
+                    <li>Антоне Снюсоне — мастер тактического нюхательного боя</li>
+                    <li>Димоне де Патроне — повелитель бутылки пива залпом</li>
+                    <li>Максоне Повароне — повелитель макарон с тунцом</li>
+                    <li>И другие воины, достойные упоминания в священных хрониках</li>
+                </ul>
+                <p>Вся деятельность Сайта подчинена трем столпам Дома:</p>
+                <ol>
+                    <li>Уважение</li>
+                    <li>Смелость</li>
+                    <li>Верность</li>
+                </ol>
+                <p>Нарушение любого пункта может привести к изгнанию, бану, анафеме, порицанию или трём суткам
+                    общественных работ в пивном отделе Эдеки (пить пиво нельзя).</p>
+
+                <h2>2. Сбор и обработка данных</h2>
+                <p>Чтобы Сайт функционировал, как положено священному ресурсу боевого братства, и чтобы никто не
+                    скрывался под маской Джим Бима или иных коварных врагов, мы собираем определённые данные.</p>
+
+                <h3>2.1 Данные учётной записи</h3>
+                <p>При регистрации мы собираем:</p>
+                <ul>
+                    <li>Адрес электронной почты (email)</li>
+                    <li>Отображаемое имя (никнейм)</li>
+                    <li>Пароль (хранится в зашифрованном виде — мы сами его не видим)</li>
+                </ul>
+
+                <h3>2.2 Данные профиля</h3>
+                <p>При использовании личного кабинета вы можете добавить:</p>
+                <ul>
+                    <li>Биографию (описание о себе)</li>
+                    <li>Аватарку (изображение профиля)</li>
+                </ul>
+
+                <h3>2.3 Коммуникационные данные</h3>
+                <p>Мы сохраняем:</p>
+                <ul>
+                    <li>Личные сообщения между пользователями</li>
+                    <li>Комментарии к новостям</li>
+                    <li>Сообщения, отправленные через контактную форму</li>
+                </ul>
+
+                <h3>2.4 Социальные данные</h3>
+                <p>Для функционирования социальных функций сайта мы храним:</p>
+                <ul>
+                    <li>Список друзей</li>
+                    <li>Запросы в друзья</li>
+                    <li>Лайки новостей</li>
+                </ul>
+
+                <h3>2.5 Технические данные</h3>
+                <p>Автоматически собираются:</p>
+                <ol>
+                    <li>Время посещения</li>
+                    <li>User-Agent (информация о браузере)</li>
+                    <li>Язык браузера</li>
+                    <li>Страну, регион и город (примерные, по IP)</li>
+                    <li>Необязательные Cookies</li>
+                    <li>Информацию о провайдере (ISP)</li>
+                    <li>Ваш IP-адрес</li>
+                    <li>Технические сведения о взаимодействии с сайтом</li>
+                </ol>
+
+                <h3>2.6 Зачем мы это делаем</h3>
+                <ol>
+                    <li>для защиты Сайта от вторжений злых духов и Джима Бим;</li>
+                    <li>для ведения летописи посещений;</li>
+                    <li>для анализа посещаемости, оптимизации и безопасности;</li>
+                    <li>для предотвращения кибер-раздражений;</li>
+                    <li>чтобы быть уверенными, что Вы — не вражеский бот, а настоящий воин.</li>
+                </ol>
+
+                <h3>2.7 Сроки хранения данных</h3>
+                <p>Данные вашей учётной записи хранятся до тех пор, пока вы сами не удалите свой аккаунт.
+                    Технические логи (IP, браузер) хранятся у Cloudflare ограниченное время и автоматически удаляются.
+                </p>
+                <p>Для удаления аккаунта свяжитесь с нами через <a href="../contact"
+                        style="color: var(--color-primary);">контактную форму</a>.</p>
+
+                <p>Мы слишком уважаем традиции и закон.</p>
+
+                <h2>3. Условия использования Сайта</h2>
+                <p>Пользователь обязуется:</p>
+                <ul>
+                    <li>не оскорблять Дом Фальконе;</li>
+                    <li>не портить репутацию Дома;</li>
+                    <li>не распространять клевету о Доне Фальконе (особенно о его молчаливых ритуалах перед битвой);
+                    </li>
+                    <li>не пытаться уничтожить Сайт;</li>
+                    <li>не проводить DDOS-атаки (мы всё равно узнаем твой IP, братан);</li>
+                    <li>не изображать себя членом Дома без официального посвящения.</li>
+                </ul>
+                <p>Пользователь соглашается, что Сайт может содержать юмор, пафос, исторические неточности, а также
+                    следы Джим Бима.</p>
+
+                <h2>4. Чего делать категорически нельзя</h2>
+                <p>Запрещено:</p>
+                <ul>
+                    <li>Хамить администрации — бан.</li>
+                    <li>Оскорблять герб Дома — бан пожизненный.</li>
+                    <li>Выкладывать мемы про то, что «Дон Фальконе опять уснул первым» — предупреждение.</li>
+                    <li>Делать вид, что Дом Фальконе — это просто «шутка» — административная кара.</li>
+                    <li>Использовать Сайт в целях вредительства — IP на алтарь, бан в подарок.</li>
+                </ul>
+                <p>Список может пополняться по мере расширения мощи Дома.</p>
+
+                <h2>5. Права Дома Фальконе</h2>
+                <p>Дом Фальконе имеет право:</p>
+                <ul>
+                    <li>банить любого без объяснения причин (но чаще с объяснением и мемом);</li>
+                    <li>вносить изменения в Соглашение;</li>
+                    <li>фиксировать попытки вторжений;</li>
+                    <li>защищать Сайт всеми доступными методами;</li>
+                    <li>требовать уважения к традициям и гербу;</li>
+                    <li>проводить ритуалы, не подлежащие обсуждению.</li>
+                </ul>
+
+                <h2>6. Ответственность сторон</h2>
+                <p>Пользователь несёт ответственность за:</p>
+                <ul>
+                    <li>свои действия на Сайте</li>
+                    <li>свои комментарии</li>
+                    <li>любой вред, нанесённый Сайту</li>
+                </ul>
+                <p>Дом Фальконе не несёт ответственности за:</p>
+                <ul>
+                    <li>последствия употребления Джим Бима</li>
+                    <li>внезапное пробуждение духов в подвале</li>
+                    <li>спонтанное появление тяги к кальяну</li>
+                    <li>неудачные попытки вступить в Дом</li>
+                    <li>пивные походы, которые вышли из-под контроля</li>
+                </ul>
+
+                <h2>7. Согласие</h2>
+                <p>Нажимая кнопку «Согласен», Вы:</p>
+                <ul>
+                    <li>подтверждаете, что Вам 14+ лет</li>
+                    <li>принимаете Соглашение целиком</li>
+                    <li>разрешаете технической информации</li>
+                    <li>соглашаетесь с традициями Дома</li>
+                    <li>признаёте власть Дона Фальконе</li>
+                    <li>обязуетесь вести себя достойно</li>
+                </ul>
+
+                <h2>8. Заключительные положения</h2>
+                <p>Дом Фальконе — структура живая, растущая и постоянно ведущая священные пятничные бои.</p>
+                <p>Мы сохраняем за собой право обновлять Соглашение, добавлять новые ритуалы, вводить законы, менять
+                    порядок посвящения новичков, а также совершенствовать систему защиты Сайта.</p>
+                <p>Если Вы продолжаете использовать Сайт — значит, Вы разделяете наши принципы.</p>
+
+                <p class="quote"><strong>Una Fides, Unus Dominus. Одна вера, Один Дон.</strong></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="../contact" class="floating-contact-btn">
+        <img src="../assets/images/phone-icon.png" alt="Contact">
+        <span class="btn-text">Связаться с Домом</span>
+    </a>
+
+    <script src="../assets/js/main.js?v=6"></script>
+    <script>
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        const token = localStorage.getItem('auth_token');
+        let notificationsInterval;
+        let messagesCheckInterval;
+        let lastMessageCount = 0;
+
+        // ============ SYNCHRONOUS AUTH CHECK (prevents flash) ============
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        // ============ ЗАГРУЗКА HEADER ============
+        async function loadUserHeader() {
+            if (!token) {
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const currentUser = await res.json();
+                    document.getElementById('auth-action').style.display = 'none';
+                    document.getElementById('user-menu').style.display = 'flex';
+                    document.getElementById('header-display-name').textContent = currentUser.display_name || currentUser.email.split('@')[0];
+                    document.getElementById('header-points').textContent = currentUser.points || 0;
+
+                    const avatar = document.getElementById('header-avatar');
+                    if (currentUser.avatar_url) {
+                        avatar.src = currentUser.avatar_url;
+                    } else {
+                        const initial = currentUser.display_name ? currentUser.display_name[0].toUpperCase() : 'U';
+                        avatar.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23ff1744' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+                    }
+
+                    // Запускаем загрузку уведомлений и сообщений
+                    loadNotifications();
+                    loadUnreadMessagesCount();
+
+                    if (notificationsInterval) clearInterval(notificationsInterval);
+                    notificationsInterval = setInterval(loadNotifications, 30000);
+
+                    if (messagesCheckInterval) clearInterval(messagesCheckInterval);
+                    messagesCheckInterval = setInterval(checkNewMessages, 5000);
+                } else {
+                    localStorage.removeItem('auth_token');
+                    document.getElementById('auth-action').style.display = 'block';
+                    document.getElementById('user-menu').style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+            }
+        }
+
+        // ============ УВЕДОМЛЕНИЯ ============
+        let lastNotificationId = 0; // Добавьте эту переменную глобально
+
+        async function loadNotifications() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/notifications", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateNotificationBadge(data.unread_count);
+                    renderNotifications(data.notifications);
+
+                    // Проверяем новые уведомления для toast
+                    if (data.notifications && data.notifications.length > 0) {
+                        const latestNotif = data.notifications[0];
+
+                        // Если это новое уведомление и оно непрочитанное
+                        if (latestNotif.id > lastNotificationId && latestNotif.is_read === 0) {
+                            showNotificationToast(
+                                latestNotif.type,
+                                latestNotif.title,
+                                latestNotif.message,
+                                latestNotif.id,
+                                latestNotif.related_id
+                            );
+                            lastNotificationId = latestNotif.id;
+                        } else if (lastNotificationId === 0) {
+                            // Инициализация при первой загрузке
+                            lastNotificationId = latestNotif.id;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Load notifications error:', err);
+            }
+        }
+
+        function showNotificationToast(type, title, message, notificationId, relatedId) {
+            // Удаляем предыдущий toast если есть
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Определяем иконку в зависимости от типа
+            let icon = '🔔';
+            let redirectUrl = null;
+            let soundFile = 'notification';
+
+            switch (type) {
+                case 'new_message':
+                    icon = '💬';
+                    soundFile = 'message-notification';
+                    redirectUrl = '../messages';
+                    break;
+                case 'news_like':
+                    icon = '❤️';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_comment':
+                    icon = '💭';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_friend':
+                    icon = '📰';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_deleted':
+                    icon = '🗑️';
+                    redirectUrl = '../news';
+                    break;
+                case 'friend_request':
+                    icon = '👥';
+                    redirectUrl = '../dashboard?tab=friends';
+                    break;
+                default:
+                    icon = '🔔';
+            }
+
+            // Проигрываем звук
+            playNotificationSound(soundFile);
+
+            // Создаем toast
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-name">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+            // Обработчик клика
+            toast.addEventListener('click', async () => {
+                // Отмечаем уведомление как прочитанное
+                try {
+                    await fetch(API_BASE + "/notifications/read", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ notificationId })
+                    });
+                    await loadNotifications();
+                } catch (err) {
+                    console.error('Mark notification read error:', err);
+                }
+
+                // Переходим по ссылке
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
+
+            document.body.appendChild(toast);
+
+            // Автоматически скрываем через 5 секунд
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function playNotificationSound(soundType) {
+            try {
+                const soundId = soundType === 'message-notification'
+                    ? 'message-notification-sound'
+                    : 'notification-sound';
+
+                const audio = document.getElementById(soundId);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.volume = 0.5; // Громкость 50%
+                    audio.play().catch(err => {
+                        console.log('Audio play prevented:', err);
+                    });
+                }
+            } catch (err) {
+                console.error('Play sound error:', err);
+            }
+        }
+
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notification-badge');
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notifications-list');
+
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = '<div class="no-notifications">Нет уведомлений</div>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(notif => {
+                const time = formatNotificationTime(notif.created_at);
+                const unreadClass = notif.is_read === 0 ? 'unread' : '';
+
+                return `
+            <div class="notification-item ${unreadClass}" onclick="handleNotificationClick(${notif.id}, ${notif.related_id}, '${notif.type}')">
+                <div class="notification-title">${notif.title}</div>
+                <div class="notification-message">${notif.message}</div>
+                <div class="notification-time">${time}</div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function formatNotificationTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Только что';
+            if (minutes < 60) return `${minutes} мин назад`;
+            if (hours < 24) return `${hours} ч назад`;
+            if (days < 7) return `${days} д назад`;
+
+            return new Date(timestamp).toLocaleDateString('ru-RU');
+        }
+
+        async function handleNotificationClick(notificationId, relatedId, type) {
+            try {
+                await fetch(API_BASE + "/notifications/read", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ notificationId })
+                });
+
+                await loadNotifications();
+                document.getElementById('notifications-dropdown').classList.remove('active');
+
+                // Переход к связанному контенту
+                if (type === 'new_message' && relatedId) {
+                    window.location.href = `../messages`;
+                } else if (type.includes('news') && relatedId) {
+                    window.location.href = `../news`;
+                }
+            } catch (err) {
+                console.error('Handle notification click error:', err);
+            }
+        }
+
+        // ============ СООБЩЕНИЯ ============
+        async function loadUnreadMessagesCount() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Load unread messages error:', err);
+            }
+        }
+
+        function updateMessagesBadge(count) {
+            const badge = document.getElementById('messages-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        async function checkNewMessages() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.unread_count > lastMessageCount && lastMessageCount > 0) {
+                        const chatsRes = await fetch(API_BASE + "/chats", {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+
+                        if (chatsRes.ok) {
+                            const chatsData = await chatsRes.json();
+                            const latestChat = chatsData.chats.find(c => c.unread_count > 0);
+
+                            if (latestChat && latestChat.last_message) {
+                                showMessageToast(
+                                    latestChat.other_user.name,
+                                    latestChat.other_user.avatar,
+                                    latestChat.last_message.content,
+                                    latestChat.chat_id,
+                                    latestChat.other_user.id
+                                );
+                            }
+                        }
+                    }
+
+                    lastMessageCount = data.unread_count;
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Check new messages error:', err);
+            }
+        }
+
+        function showMessageToast(senderName, senderAvatar, messagePreview, chatId, senderId) {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Проигрываем звук сообщения
+            playNotificationSound('message-notification');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <img src="${senderAvatar || getDefaultAvatar(senderName)}" class="toast-avatar">
+        <div class="toast-content">
+            <div class="toast-name">${senderName}</div>
+            <div class="toast-message">${messagePreview}</div>
+        </div>
+    `;
+
+            toast.addEventListener('click', () => {
+                window.location.href = `../messages?chatWith=${senderId}`;
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function getDefaultAvatar(name) {
+            const initial = name ? name[0].toUpperCase() : '?';
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Crect fill='%23ff1744' width='45' height='45'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+        }
+
+        // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+        document.getElementById('notification-bell')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifications-dropdown');
+            dropdown.classList.toggle('active');
+            if (dropdown.classList.contains('active')) {
+                loadNotifications();
+            }
+        });
+
+        document.getElementById('mark-all-read-btn')?.addEventListener('click', async () => {
+            try {
+                await fetch(API_BASE + "/notifications/read-all", {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                await loadNotifications();
+            } catch (err) {
+                console.error('Mark all read error:', err);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notifications-dropdown');
+            const bell = document.getElementById('notification-bell');
+            if (dropdown && !dropdown.contains(e.target) && !bell.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // ============ CONSENT-BASED NAVIGATION RESTRICTION ============
+        const CONSENT_KEY = 'dom_falcone_consent_accepted';
+
+        function hasConsent() {
+            return localStorage.getItem(CONSENT_KEY) === 'true';
+        }
+
+        // If user hasn't consented, intercept all navigation clicks
+        if (!hasConsent()) {
+            document.addEventListener('click', function (e) {
+                const target = e.target.closest('a, button');
+                if (target) {
+                    // Allow only reading the page, not navigating away
+                    const href = target.getAttribute('href');
+
+                    // If it's a navigation link (not just an anchor)
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Redirect to homepage where consent modal will appear
+                        window.location.href = '../homepage';
+                    }
+                }
+            }, true);
+
+            // Also intercept form submissions
+            document.addEventListener('submit', function (e) {
+                e.preventDefault();
+                window.location.href = '../homepage';
+            }, true);
+        }
+
+        // ============ ИНИЦИАЛИЗАЦИЯ ============
+        document.addEventListener('DOMContentLoaded', loadUserHeader);
+    </script>
+
+    <!-- Audio for notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="../assets/audio/notification.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="message-notification-sound" preload="auto">
+        <source src="../assets/audio/message-notification.mp3" type="audio/mpeg">
+    </audio>
+    <script src="../assets/js/analytics.js"></script>
+</body>
+
+</html>

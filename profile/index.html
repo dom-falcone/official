@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Профиль - Dom Falcone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
+    <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <style>
+        /* Profile page specific styles */
+        .profile-page-header {
+            padding: 3rem 0 2rem;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(255, 23, 68, 0.05), transparent);
+            border-bottom: 1px solid rgba(255, 23, 68, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .profile-page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .profile-page-header p {
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .profile-card {
+            background: var(--color-surface);
+            border: 1px solid rgba(255, 23, 68, 0.1);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .profile-avatar-large {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 0 auto 2rem;
+            box-shadow: var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile-display-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .profile-rank-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 23, 68, 0.1);
+            border: 2px solid var(--color-primary);
+            border-radius: 50px;
+            color: var(--color-primary);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .profile-stat-label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-top: 0.3rem;
+        }
+
+        a.profile-stat:hover {
+            transform: scale(1.05);
+            background: rgba(255, 23, 68, 0.1);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin: -0.5rem;
+        }
+
+        .profile-bio {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            color: var(--color-text-muted);
+            font-style: italic;
+            margin-top: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .add-friend-btn,
+        .message-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-main);
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .add-friend-btn:hover,
+        .message-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 23, 68, 0.4);
+        }
+
+        .add-friend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message-btn {
+            background: linear-gradient(135deg, #2196F3, #21CBF3);
+        }
+
+        .message-btn:hover {
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .error-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="loader-text">Ждать. Идет загрузка.</div>
+            <div class="loader-hymn-section">
+                <div class="loader-hymn-label">Гимн Дома Фальконе</div>
+                <div class="loader-player-container">
+                    <div class="loader-play-btn" id="loader-play-btn">
+                        <div class="loader-play-icon"></div>
+                    </div>
+                    <div class="loader-progress-container">
+                        <div class="loader-progress-bar" id="loader-progress"></div>
+                    </div>
+                </div>
+                <audio id="loader-audio" src="../assets/audio/hymn.mp3"></audio>
+            </div>
+        </div>
+    </div>
+
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <a href="../homepage">
+                    <div class="logo-mark"
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
+                    <span class="brand-title">Dom Falcone</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="nav">
+                <a href="../about">О доме</a>
+                <a href="../history">История</a>
+                <a href="../enemies">Противники</a>
+                <a href="../news">Новости</a>
+            </nav>
+
+            <!-- Burger Menu Button -->
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <!-- Кнопка "Войти" (показывается когда не авторизован) -->
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login">Войти</a>
+            </div>
+
+            <!-- User Menu (показывается когда авторизован) -->
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <!-- Кнопка сообщений -->
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <!-- Кнопка уведомлений -->
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+
+                    <!-- Выпадающий список уведомлений -->
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Профиль пользователя -->
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
+
+    <main>
+        <div class="profile-page-header">
+            <div class="container">
+                <h1>Профиль участника</h1>
+                <p>Информация о члене Дома Фальконе</p>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <div id="profile-content">
+                <div class="profile-card">
+                    <div class="profile-avatar-large" id="avatar-container">
+                        <span id="avatar-initials">?</span>
+                    </div>
+                    <div class="profile-display-name" id="display-name">Загрузка...</div>
+                    <div class="profile-rank-badge" id="rank-badge">...</div>
+
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="profile-stat-value" id="points">0</div>
+                            <div class="profile-stat-label">Очков</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="profile-stat-value" id="friends-count">0</div>
+                            <div class="profile-stat-label">Друзей</div>
+                        </div>
+                        <a href="../leaderboard" class="profile-stat"
+                            style="text-decoration: none; cursor: pointer; transition: transform 0.2s ease;">
+                            <div class="profile-stat-value" id="user-rank">-</div>
+                            <div class="profile-stat-label">Место в рейтинге</div>
+                        </a>
+                    </div>
+
+                    <div class="profile-bio" id="bio">Биография не указана</div>
+
+                    <div class="profile-actions">
+                        <a href="../dashboard" class="back-btn">← Назад</a>
+                        <button class="add-friend-btn" id="add-friend-btn" style="display: none;">
+                            Добавить в друзья
+                        </button>
+                        <a href="../messages" class="message-btn" id="message-btn" style="display: none;">
+                            💬 Написать сообщение
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error-content" style="display: none;">
+                <div class="error-state">
+                    <div class="error-state-icon">😕</div>
+                    <h2>Профиль не найден</h2>
+                    <p>Пользователь с таким ID не существует или был удален.</p>
+                    <a href="../dashboard" class="back-btn" style="margin-top: 2rem;">← Вернуться в кабинет</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // ============================================
+        // ОБЪЕДИНЁННЫЙ СКРИПТ ПРОФИЛЯ
+        // ============================================
+
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        const token = localStorage.getItem('auth_token') || "";
+        let profileUserId = null;
+        let currentUser = null;
+
+        // Для уведомлений
+        let notificationsInterval;
+        let messagesCheckInterval;
+        let lastMessageCount = 0;
+
+        // ============ SYNCHRONOUS AUTH CHECK (prevents flash) ============
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        // ============ ИНИЦИАЛИЗАЦИЯ ============
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Загружаем header (если авторизован)
+            if (token) {
+                await loadUserHeader();
+            }
+
+            // Загружаем профиль пользователя
+            const urlParams = new URLSearchParams(window.location.search);
+            profileUserId = urlParams.get('id');
+
+            if (!profileUserId) {
+                showError();
+                return;
+            }
+
+            await loadProfile();
+        });
+
+        // ============ ЗАГРУЗКА HEADER ============
+        async function loadUserHeader() {
+            if (!token) {
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    currentUser = await res.json();
+
+                    // Обновляем UI header
+                    document.getElementById('auth-action').style.display = 'none';
+                    document.getElementById('user-menu').style.display = 'flex';
+
+                    document.getElementById('header-display-name').textContent =
+                        currentUser.display_name || currentUser.email.split('@')[0];
+                    document.getElementById('header-points').textContent = currentUser.points || 0;
+
+                    const avatar = document.getElementById('header-avatar');
+                    if (currentUser.avatar_url) {
+                        avatar.src = currentUser.avatar_url;
+                    } else {
+                        const initial = currentUser.display_name ?
+                            currentUser.display_name[0].toUpperCase() : 'U';
+                        avatar.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23ff1744' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+                    }
+
+                    // Запускаем уведомления
+                    loadNotifications();
+                    loadUnreadMessagesCount();
+
+                    if (notificationsInterval) clearInterval(notificationsInterval);
+                    notificationsInterval = setInterval(loadNotifications, 30000);
+
+                    if (messagesCheckInterval) clearInterval(messagesCheckInterval);
+                    messagesCheckInterval = setInterval(checkNewMessages, 5000);
+                } else {
+                    localStorage.removeItem('auth_token');
+                    document.getElementById('auth-action').style.display = 'block';
+                    document.getElementById('user-menu').style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Load header error:', err);
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+            }
+        }
+
+        // ============ ЗАГРУЗКА ПРОФИЛЯ ============
+        function showLoading(show) {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                if (show) {
+                    loader.classList.remove('loaded');
+                } else {
+                    loader.classList.add('loaded');
+                }
+            }
+        }
+
+        function showError() {
+            document.getElementById('profile-content').style.display = 'none';
+            document.getElementById('error-content').style.display = 'block';
+        }
+
+        async function loadProfile() {
+            showLoading(true);
+            try {
+                const headers = token ? { "Authorization": "Bearer " + token } : {};
+                const res = await fetch(API_BASE + "/user/" + profileUserId, { headers });
+
+                if (!res.ok) {
+                    if (res.status === 404) {
+                        showError();
+                    } else {
+                        console.error('Profile load failed:', res.status);
+                        showError();
+                    }
+                    return;
+                }
+
+                const userData = await res.json();
+                displayProfile(userData);
+
+            } catch (err) {
+                console.error('Profile load error:', err);
+                showError();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayProfile(data) {
+            const avatarContainer = document.getElementById('avatar-container');
+            const avatarInitials = document.getElementById('avatar-initials');
+
+            if (data.avatar_url && data.avatar_url.trim()) {
+                const img = document.createElement('img');
+                img.src = data.avatar_url;
+                img.alt = data.display_name || 'Avatar';
+                img.onerror = function () {
+                    this.remove();
+                    avatarInitials.style.display = 'block';
+                };
+                avatarInitials.style.display = 'none';
+                avatarContainer.appendChild(img);
+            } else {
+                avatarInitials.textContent = data.display_name ?
+                    data.display_name[0].toUpperCase() : '?';
+            }
+
+            document.getElementById('display-name').textContent = data.display_name || 'Аноним';
+            document.getElementById('rank-badge').textContent = data.rank || 'Новичок';
+            document.getElementById('points').textContent = data.points || 0;
+            document.getElementById('friends-count').textContent = data.friends_count || 0;
+            document.getElementById('user-rank').textContent = data.user_rank || '-';
+            document.getElementById('bio').textContent = data.bio || 'Биография не указана';
+            document.title = `${data.display_name || 'Профиль'} - Dom Falcone`;
+
+            // Показываем кнопки только если это не свой профиль
+            const isOwnProfile = currentUser && data.id == currentUser.id;
+
+            if (token && !isOwnProfile) {
+                // Кнопка добавления в друзья
+                const addBtn = document.getElementById('add-friend-btn');
+                addBtn.style.display = 'inline-flex';
+
+                if (data.friendship_status === 'accepted') {
+                    addBtn.textContent = '✓ Уже в друзьях';
+                    addBtn.disabled = true;
+                } else if (data.friendship_status === 'pending_sent') {
+                    addBtn.textContent = 'Запрос отправлен';
+                    addBtn.disabled = true;
+                } else if (data.friendship_status === 'pending_received') {
+                    addBtn.textContent = 'Принять запрос';
+                    addBtn.onclick = () => acceptFriendRequest(data.id);
+                } else {
+                    addBtn.textContent = 'Добавить в друзья';
+                    addBtn.onclick = () => sendFriendRequest(data.id);
+                }
+
+                // Кнопка написать сообщение
+                const messageBtn = document.getElementById('message-btn');
+                messageBtn.style.display = 'inline-flex';
+                messageBtn.href = `../messages?chatWith=${data.id}`;
+            }
+        }
+
+        async function sendFriendRequest(friendId) {
+            const btn = document.getElementById('add-friend-btn');
+            btn.disabled = true;
+            btn.textContent = 'Отправка...';
+
+            try {
+                const res = await fetch(API_BASE + "/friends/request", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ friendId })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    btn.textContent = '✓ Запрос отправлен';
+                    showSuccessModal('Запрос в друзья отправлен');
+                } else {
+                    btn.textContent = 'Добавить в друзья';
+                    btn.disabled = false;
+                    showErrorModal(data.error || 'Ошибка отправки запроса');
+                }
+            } catch (err) {
+                console.error('Send request error:', err);
+                btn.textContent = 'Добавить в друзья';
+                btn.disabled = false;
+                showErrorModal('Ошибка подключения');
+            }
+        }
+
+        async function acceptFriendRequest(friendId) {
+            const btn = document.getElementById('add-friend-btn');
+            btn.disabled = true;
+            btn.textContent = 'Принимаем...';
+
+            try {
+                const res = await fetch(API_BASE + "/friends/accept", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ friendId })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    btn.textContent = '✓ Уже в друзьях';
+                    showSuccessModal('Запрос в друзья принят');
+                    await loadProfile();
+                } else {
+                    btn.textContent = 'Принять запрос';
+                    btn.disabled = false;
+                    showErrorModal(data.error || 'Ошибка принятия запроса');
+                }
+            } catch (err) {
+                console.error('Accept request error:', err);
+                btn.textContent = 'Принять запрос';
+                btn.disabled = false;
+                showErrorModal('Ошибка подключения');
+            }
+        }
+
+        // ============ УВЕДОМЛЕНИЯ ============
+        let lastNotificationId = 0; // Добавьте эту переменную глобально
+
+        async function loadNotifications() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/notifications", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateNotificationBadge(data.unread_count);
+                    renderNotifications(data.notifications);
+
+                    // Проверяем новые уведомления для toast
+                    if (data.notifications && data.notifications.length > 0) {
+                        const latestNotif = data.notifications[0];
+
+                        // Если это новое уведомление и оно непрочитанное
+                        if (latestNotif.id > lastNotificationId && latestNotif.is_read === 0) {
+                            showNotificationToast(
+                                latestNotif.type,
+                                latestNotif.title,
+                                latestNotif.message,
+                                latestNotif.id,
+                                latestNotif.related_id
+                            );
+                            lastNotificationId = latestNotif.id;
+                        } else if (lastNotificationId === 0) {
+                            // Инициализация при первой загрузке
+                            lastNotificationId = latestNotif.id;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Load notifications error:', err);
+            }
+        }
+
+        function showNotificationToast(type, title, message, notificationId, relatedId) {
+            // Удаляем предыдущий toast если есть
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Определяем иконку в зависимости от типа
+            let icon = '🔔';
+            let redirectUrl = null;
+            let soundFile = 'notification';
+
+            switch (type) {
+                case 'new_message':
+                    icon = '💬';
+                    soundFile = 'message-notification';
+                    redirectUrl = '../messages';
+                    break;
+                case 'news_like':
+                    icon = '❤️';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_comment':
+                    icon = '💭';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_friend':
+                    icon = '📰';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_deleted':
+                    icon = '🗑️';
+                    redirectUrl = '../news';
+                    break;
+                case 'friend_request':
+                    icon = '👥';
+                    redirectUrl = '../dashboard?tab=friends';
+                    break;
+                default:
+                    icon = '🔔';
+            }
+
+            // Проигрываем звук
+            playNotificationSound(soundFile);
+
+            // Создаем toast
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-name">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+            // Обработчик клика
+            toast.addEventListener('click', async () => {
+                // Отмечаем уведомление как прочитанное
+                try {
+                    await fetch(API_BASE + "/notifications/read", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ notificationId })
+                    });
+                    await loadNotifications();
+                } catch (err) {
+                    console.error('Mark notification read error:', err);
+                }
+
+                // Переходим по ссылке
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
+
+            document.body.appendChild(toast);
+
+            // Автоматически скрываем через 5 секунд
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function playNotificationSound(soundType) {
+            try {
+                const soundId = soundType === 'message-notification'
+                    ? 'message-notification-sound'
+                    : 'notification-sound';
+
+                const audio = document.getElementById(soundId);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.volume = 0.5; // Громкость 50%
+                    audio.play().catch(err => {
+                        console.log('Audio play prevented:', err);
+                    });
+                }
+            } catch (err) {
+                console.error('Play sound error:', err);
+            }
+        }
+
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notification-badge');
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notifications-list');
+
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = '<div class="no-notifications">Нет уведомлений</div>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(notif => {
+                const time = formatNotificationTime(notif.created_at);
+                const unreadClass = notif.is_read === 0 ? 'unread' : '';
+
+                return `
+            <div class="notification-item ${unreadClass}" 
+                 onclick="handleNotificationClick(${notif.id}, ${notif.related_id}, '${notif.type}')">
+                <div class="notification-title">${escapeHtml(notif.title)}</div>
+                <div class="notification-message">${escapeHtml(notif.message)}</div>
+                <div class="notification-time">${time}</div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function formatNotificationTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Только что';
+            if (minutes < 60) return `${minutes} мин назад`;
+            if (hours < 24) return `${hours} ч назад`;
+            if (days < 7) return `${days} д назад`;
+
+            return new Date(timestamp).toLocaleDateString('ru-RU');
+        }
+
+        async function handleNotificationClick(notificationId, relatedId, type) {
+            try {
+                await fetch(API_BASE + "/notifications/read", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ notificationId })
+                });
+
+                await loadNotifications();
+                document.getElementById('notifications-dropdown').classList.remove('active');
+
+                if (type === 'new_message' && relatedId) {
+                    window.location.href = `../messages`;
+                } else if (type.includes('news') && relatedId) {
+                    window.location.href = `../news`;
+                }
+            } catch (err) {
+                console.error('Handle notification click error:', err);
+            }
+        }
+
+        // ============ СООБЩЕНИЯ ============
+        async function loadUnreadMessagesCount() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Load unread messages error:', err);
+            }
+        }
+
+        function updateMessagesBadge(count) {
+            const badge = document.getElementById('messages-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        async function checkNewMessages() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.unread_count > lastMessageCount && lastMessageCount > 0) {
+                        const chatsRes = await fetch(API_BASE + "/chats", {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+
+                        if (chatsRes.ok) {
+                            const chatsData = await chatsRes.json();
+                            const latestChat = chatsData.chats.find(c => c.unread_count > 0);
+
+                            if (latestChat && latestChat.last_message) {
+                                showMessageToast(
+                                    latestChat.other_user.name,
+                                    latestChat.other_user.avatar,
+                                    latestChat.last_message.content,
+                                    latestChat.chat_id,
+                                    latestChat.other_user.id
+                                );
+                            }
+                        }
+                    }
+
+                    lastMessageCount = data.unread_count;
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Check new messages error:', err);
+            }
+        }
+
+        function showMessageToast(senderName, senderAvatar, messagePreview, chatId, senderId) {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Проигрываем звук сообщения
+            playNotificationSound('message-notification');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <img src="${senderAvatar || getDefaultAvatar(senderName)}" class="toast-avatar">
+        <div class="toast-content">
+            <div class="toast-name">${senderName}</div>
+            <div class="toast-message">${messagePreview}</div>
+        </div>
+    `;
+
+            toast.addEventListener('click', () => {
+                window.location.href = `../messages?chatWith=${senderId}`;
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // ============ УТИЛИТЫ ============
+        function getDefaultAvatar(name) {
+            const initial = name ? name[0].toUpperCase() : '?';
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Crect fill='%23ff1744' width='45' height='45'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+        document.getElementById('notification-bell')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifications-dropdown');
+            dropdown.classList.toggle('active');
+            if (dropdown.classList.contains('active')) {
+                loadNotifications();
+            }
+        });
+
+        document.getElementById('mark-all-read-btn')?.addEventListener('click', async () => {
+            try {
+                await fetch(API_BASE + "/notifications/read-all", {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                await loadNotifications();
+            } catch (err) {
+                console.error('Mark all read error:', err);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notifications-dropdown');
+            const bell = document.getElementById('notification-bell');
+            if (dropdown && !dropdown.contains(e.target) && !bell.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+
+    <script src="../assets/js/main.js?v=6"></script>
+
+    <!-- Audio for notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="../assets/audio/notification.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="message-notification-sound" preload="auto">
+        <source src="../assets/audio/message-notification.mp3" type="audio/mpeg">
+    </audio>
+    <script src="../assets/js/analytics.js"></script>
+</body>
+
+</html>

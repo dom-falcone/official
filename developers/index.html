@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Разработчики | Dom Falcone</title>
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
+    <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
+    <style>
+        .developers-section {
+            min-height: 100vh;
+            padding: 100px 20px 60px;
+        }
+
+        .developers-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .developers-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .developers-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+        }
+
+        .developers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            justify-items: center;
+        }
+
+        .developer-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .developer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff1744, #ff8a80, #ff1744);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease infinite;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .developer-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 23, 68, 0.3);
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(255, 23, 68, 0.1);
+        }
+
+        .developer-image-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .developer-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 23, 68, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .developer-card:hover .developer-image {
+            border-color: #ff1744;
+            box-shadow: 0 0 30px rgba(255, 23, 68, 0.4);
+        }
+
+        .developer-image-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border: 2px dashed rgba(255, 23, 68, 0.3);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .developer-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .developer-role {
+            color: #ff1744;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .developer-role::before,
+        .developer-role::after {
+            content: '';
+            width: 30px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ff1744);
+        }
+
+        .developer-role::after {
+            background: linear-gradient(90deg, #ff1744, transparent);
+        }
+
+        .developer-bio {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .developer-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .skill-tag {
+            background: rgba(255, 23, 68, 0.15);
+            color: #ff8a80;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: rgba(255, 23, 68, 0.3);
+            transform: scale(1.05);
+        }
+
+        .team-quote {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 23, 68, 0.1) 0%, rgba(255, 23, 68, 0.05) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 23, 68, 0.2);
+        }
+
+        .team-quote p {
+            font-style: italic;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+
+        .team-quote span {
+            color: #ff1744;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .developers-title {
+                font-size: 2rem;
+            }
+
+            .developers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .developer-card {
+                padding: 2rem;
+            }
+
+            .developer-image-wrapper,
+            .developer-image {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* Helpers Section */
+        .helpers-section {
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .helpers-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            display: inline-block;
+        }
+
+        .helpers-title::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff1744, #ff8a80);
+            margin: 0.5rem auto 0;
+            border-radius: 2px;
+        }
+
+        .helpers-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .helpers-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .helper-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+        .helper-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 23, 68, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .helper-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 23, 68, 0.3);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .helper-card:hover .helper-image {
+            border-color: rgba(255, 23, 68, 0.6);
+        }
+
+        .helper-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        .helper-role {
+            color: rgba(255, 23, 68, 0.7);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 500px) {
+            .helpers-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Donation Section */
+        .donation-section {
+            margin-top: 4rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(255, 23, 68, 0.1) 0%, rgba(255, 23, 68, 0.03) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 23, 68, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .donation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff1744, transparent);
+        }
+
+        .donation-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .donation-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .donation-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .donation-qr {
+            width: 220px;
+            height: 220px;
+            border-radius: 16px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .donation-qr:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(255, 23, 68, 0.3);
+        }
+
+        .donation-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .donation-info {
+            max-width: 350px;
+            text-align: left;
+        }
+
+        .donation-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .donation-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 112, 186, 0.3);
+        }
+
+        .donation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 112, 186, 0.5);
+        }
+
+        .donation-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .donation-heart {
+            display: inline-block;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            75% {
+                transform: scale(1.1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .donation-section {
+                padding: 2rem;
+            }
+
+            .donation-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .donation-info {
+                text-align: center;
+            }
+
+            .donation-qr {
+                width: 160px;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="loader-text">Ждать. Идет загрузка.</div>
+            <div class="loader-hymn-section">
+                <div class="loader-hymn-label">Гимн Дома Фальконе</div>
+                <div class="loader-player-container">
+                    <div class="loader-play-btn" id="loader-play-btn">
+                        <div class="loader-play-icon"></div>
+                    </div>
+                    <div class="loader-progress-container">
+                        <div class="loader-progress-bar" id="loader-progress"></div>
+                    </div>
+                </div>
+                <audio id="loader-audio" src="../assets/audio/hymn.mp3"></audio>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <a href="../homepage">
+                    <div class="logo-mark"
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
+                    <span class="brand-title">Dom Falcone</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="nav">
+                <a href="../about">О доме</a>
+                <a href="../history">История</a>
+                <a href="../enemies">Противники</a>
+                <a href="../news">Новости</a>
+            </nav>
+
+            <!-- Burger Menu Button -->
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <!-- Кнопка "Войти" (показывается когда не авторизован) -->
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login">Войти</a>
+            </div>
+
+            <!-- User Menu (показывается когда авторизован) -->
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <!-- Кнопка сообщений -->
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <!-- Кнопка уведомлений -->
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+
+                    <!-- Выпадающий список уведомлений -->
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Профиль пользователя -->
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="developers-section">
+        <div class="developers-container">
+            <h1 class="developers-title">Разработчики</h1>
+            <p class="developers-subtitle">Команда, которая создала Дом Фальконе</p>
+
+            <div class="developers-grid">
+                <!-- Developer 1: Arkadii -->
+                <div class="developer-card">
+                    <div class="developer-image-wrapper">
+                        <img src="../assets/images/developer-arkadii.png" alt="Arkadii Humeniuk"
+                            class="developer-image">
+                    </div>
+                    <h2 class="developer-name">Arkadii Humeniuk</h2>
+                    <div class="developer-role">Developer</div>
+                    <p class="developer-bio">
+                        Создатель и архитектор сайта. Основатель Дома Фальконе. Ответственный за Frontend-разработку
+                        сайта. Главный дизайнер проекта. Вносит свой постоянный вклад в развитие проекта своим
+                        непосредственным подходом к делу, а также своей уникальной дизайнерской мыслью.
+                    </p>
+                    <div class="developer-skills">
+                        <span class="skill-tag">Frontend</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">HTML/CSS</span>
+                        <span class="skill-tag">Web-Design</span>
+                        <span class="skill-tag">Cybersecurity</span>
+                    </div>
+                </div>
+
+                <!-- Developer 2: Dmitry -->
+                <div class="developer-card">
+                    <div class="developer-image-wrapper">
+                        <img src="../assets/images/developer-dmitry.jpeg" alt="Dmitry Muntean" class="developer-image">
+                    </div>
+                    <h2 class="developer-name">Dmitry Muntean</h2>
+                    <div class="developer-role">Developer</div>
+                    <p class="developer-bio">
+                        Создатель и разработчик проекта. Ответственный за Backend разработку и администрирование баз
+                        данных. Главный "технарь" Дома Фальконе. Вносит вклад в развитие сайта своими техническими
+                        нововведениями и амбициозными идеями по развитию сайта.
+                    </p>
+                    <div class="developer-skills">
+                        <span class="skill-tag">Backend</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">HTML/CSS</span>
+                        <span class="skill-tag">Database</span>
+                        <span class="skill-tag">Support</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Helpers Section -->
+            <div class="helpers-section">
+                <h2 class="helpers-title">Хэлперы</h2>
+                <p class="helpers-subtitle">Помощники проекта</p>
+
+                <div class="helpers-grid">
+                    <div class="helper-card">
+                        <img src="../assets/images/anton-aheshyn.jpg" alt="Anton Aheshyn" class="helper-image">
+                        <h3 class="helper-name">Anton Aheshyn</h3>
+                        <div class="helper-role">Сбор технических данных</div>
+                    </div>
+
+                    <div class="helper-card">
+                        <img src="../assets/images/mykhailo-kurlat.png" alt="Mykhailo Kurlat" class="helper-image">
+                        <h3 class="helper-name">Mykhailo Kurlat</h3>
+                        <div class="helper-role">Графический дизайн</div>
+                    </div>
+                </div>
+            </div>
+
+            <p
+                style="text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.288); margin: 2rem 0 1rem; font-style: italic;">
+                Кудыш Максим Александрович создал страничку в википедии.</p>
+
+            <div class="team-quote">
+                <p>«Мы создаём не просто сайт — мы создаём историю»</p>
+                <span>— Команда разработчиков Дома Фальконе</span>
+            </div>
+
+            <!-- Donation Section -->
+            <div class="donation-section">
+                <h2 class="donation-title"><span class="donation-heart">❤️</span> Поддержать Семью</h2>
+                <p class="donation-subtitle">Верность награждается. Щедрость — помнится.</p>
+
+                <div class="donation-content">
+                    <div class="donation-qr">
+                        <img src="../assets/images/paypal-qr.png" alt="PayPal QR Code">
+                    </div>
+
+                    <div class="donation-info">
+                        <p>
+                            Дом Фальконе строится не только на крови и чести, но и на поддержке тех,
+                            кто верит в наше дело. Ваш вклад укрепляет Семью, расширяет наше влияние
+                            и приближает день нашего абсолютного триумфа. Дон помнит каждого,
+                            кто стоит рядом с Домом.
+                        </p>
+                        <a href="https://www.paypal.com/pool/9kMd29jH59?sr=ancr" target="_blank"
+                            rel="noopener noreferrer" class="donation-btn">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.65h6.21c2.735 0 4.627.737 5.623 2.19.946 1.38.945 3.176-.016 5.507-.115.281-.263.577-.393.823-.93 1.74-2.498 2.936-4.66 3.517a10.396 10.396 0 0 1-2.556.315H7.93l-.853 6.015z" />
+                            </svg>
+                            Поддержать Дом
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="../contact" class="floating-contact-btn">
+        <img src="../assets/images/phone-icon.png" alt="Contact">
+        <span class="btn-text">Связаться с Домом</span>
+    </a>
+
+    <script src="../assets/js/main.js?v=6"></script>
+    <script>
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        const token = localStorage.getItem('auth_token');
+        let notificationsInterval;
+        let messagesCheckInterval;
+        let lastMessageCount = 0;
+
+        // ============ SYNCHRONOUS AUTH CHECK (prevents flash) ============
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        // ============ ЗАГРУЗКА HEADER ============
+        async function loadUserHeader() {
+            if (!token) {
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const currentUser = await res.json();
+                    document.getElementById('auth-action').style.display = 'none';
+                    document.getElementById('user-menu').style.display = 'flex';
+                    document.getElementById('header-display-name').textContent = currentUser.display_name || currentUser.email.split('@')[0];
+                    document.getElementById('header-points').textContent = currentUser.points || 0;
+
+                    const avatar = document.getElementById('header-avatar');
+                    if (currentUser.avatar_url) {
+                        avatar.src = currentUser.avatar_url;
+                    } else {
+                        const initial = currentUser.display_name ? currentUser.display_name[0].toUpperCase() : 'U';
+                        avatar.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23ff1744' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+                    }
+
+                    loadNotifications();
+                    loadUnreadMessagesCount();
+
+                    if (notificationsInterval) clearInterval(notificationsInterval);
+                    notificationsInterval = setInterval(loadNotifications, 30000);
+
+                    if (messagesCheckInterval) clearInterval(messagesCheckInterval);
+                    messagesCheckInterval = setInterval(checkNewMessages, 5000);
+                } else {
+                    localStorage.removeItem('auth_token');
+                    document.getElementById('auth-action').style.display = 'block';
+                    document.getElementById('user-menu').style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+            }
+        }
+
+        // ============ УВЕДОМЛЕНИЯ ============
+        let lastNotificationId = 0; // Добавьте эту переменную глобально
+
+        async function loadNotifications() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/notifications", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateNotificationBadge(data.unread_count);
+                    renderNotifications(data.notifications);
+
+                    // Проверяем новые уведомления для toast
+                    if (data.notifications && data.notifications.length > 0) {
+                        const latestNotif = data.notifications[0];
+
+                        // Если это новое уведомление и оно непрочитанное
+                        if (latestNotif.id > lastNotificationId && latestNotif.is_read === 0) {
+                            showNotificationToast(
+                                latestNotif.type,
+                                latestNotif.title,
+                                latestNotif.message,
+                                latestNotif.id,
+                                latestNotif.related_id
+                            );
+                            lastNotificationId = latestNotif.id;
+                        } else if (lastNotificationId === 0) {
+                            // Инициализация при первой загрузке
+                            lastNotificationId = latestNotif.id;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Load notifications error:', err);
+            }
+        }
+
+        function showNotificationToast(type, title, message, notificationId, relatedId) {
+            // Удаляем предыдущий toast если есть
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Определяем иконку в зависимости от типа
+            let icon = '🔔';
+            let redirectUrl = null;
+            let soundFile = 'notification';
+
+            switch (type) {
+                case 'new_message':
+                    icon = '💬';
+                    soundFile = 'message-notification';
+                    redirectUrl = '../messages';
+                    break;
+                case 'news_like':
+                    icon = '❤️';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_comment':
+                    icon = '💭';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_friend':
+                    icon = '📰';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_deleted':
+                    icon = '🗑️';
+                    redirectUrl = '../news';
+                    break;
+                case 'friend_request':
+                    icon = '👥';
+                    redirectUrl = '../dashboard?tab=friends';
+                    break;
+                default:
+                    icon = '🔔';
+            }
+
+            // Проигрываем звук
+            playNotificationSound(soundFile);
+
+            // Создаем toast
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-name">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+            // Обработчик клика
+            toast.addEventListener('click', async () => {
+                // Отмечаем уведомление как прочитанное
+                try {
+                    await fetch(API_BASE + "/notifications/read", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ notificationId })
+                    });
+                    await loadNotifications();
+                } catch (err) {
+                    console.error('Mark notification read error:', err);
+                }
+
+                // Переходим по ссылке
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
+
+            document.body.appendChild(toast);
+
+            // Автоматически скрываем через 5 секунд
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function playNotificationSound(soundType) {
+            try {
+                const soundId = soundType === 'message-notification'
+                    ? 'message-notification-sound'
+                    : 'notification-sound';
+
+                const audio = document.getElementById(soundId);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.volume = 0.5; // Громкость 50%
+                    audio.play().catch(err => {
+                        console.log('Audio play prevented:', err);
+                    });
+                }
+            } catch (err) {
+                console.error('Play sound error:', err);
+            }
+        }
+
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notification-badge');
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notifications-list');
+
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = '<div class="no-notifications">Нет уведомлений</div>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(notif => {
+                const time = formatNotificationTime(notif.created_at);
+                const unreadClass = notif.is_read === 0 ? 'unread' : '';
+
+                return `
+            <div class="notification-item ${unreadClass}" onclick="handleNotificationClick(${notif.id}, ${notif.related_id}, '${notif.type}')">
+                <div class="notification-title">${notif.title}</div>
+                <div class="notification-message">${notif.message}</div>
+                <div class="notification-time">${time}</div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function formatNotificationTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Только что';
+            if (minutes < 60) return `${minutes} мин назад`;
+            if (hours < 24) return `${hours} ч назад`;
+            if (days < 7) return `${days} д назад`;
+
+            return new Date(timestamp).toLocaleDateString('ru-RU');
+        }
+
+        async function handleNotificationClick(notificationId, relatedId, type) {
+            try {
+                await fetch(API_BASE + "/notifications/read", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ notificationId })
+                });
+
+                await loadNotifications();
+                document.getElementById('notifications-dropdown').classList.remove('active');
+
+                if (type === 'new_message' && relatedId) {
+                    window.location.href = `../messages`;
+                } else if (type.includes('news') && relatedId) {
+                    window.location.href = `../news`;
+                }
+            } catch (err) {
+                console.error('Handle notification click error:', err);
+            }
+        }
+
+        // ============ СООБЩЕНИЯ ============
+        async function loadUnreadMessagesCount() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Load unread messages error:', err);
+            }
+        }
+
+        function updateMessagesBadge(count) {
+            const badge = document.getElementById('messages-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        async function checkNewMessages() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.unread_count > lastMessageCount && lastMessageCount > 0) {
+                        const chatsRes = await fetch(API_BASE + "/chats", {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+
+                        if (chatsRes.ok) {
+                            const chatsData = await chatsRes.json();
+                            const latestChat = chatsData.chats.find(c => c.unread_count > 0);
+
+                            if (latestChat && latestChat.last_message) {
+                                showMessageToast(
+                                    latestChat.other_user.name,
+                                    latestChat.other_user.avatar,
+                                    latestChat.last_message.content,
+                                    latestChat.chat_id,
+                                    latestChat.other_user.id
+                                );
+                            }
+                        }
+                    }
+
+                    lastMessageCount = data.unread_count;
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Check new messages error:', err);
+            }
+        }
+
+        function showMessageToast(senderName, senderAvatar, messagePreview, chatId, senderId) {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Проигрываем звук сообщения
+            playNotificationSound('message-notification');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <img src="${senderAvatar || getDefaultAvatar(senderName)}" class="toast-avatar">
+        <div class="toast-content">
+            <div class="toast-name">${senderName}</div>
+            <div class="toast-message">${messagePreview}</div>
+        </div>
+    `;
+
+            toast.addEventListener('click', () => {
+                window.location.href = `../messages?chatWith=${senderId}`;
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function getDefaultAvatar(name) {
+            const initial = name ? name[0].toUpperCase() : '?';
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Crect fill='%23ff1744' width='45' height='45'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+        }
+
+        // ============ ОБРАБОТЧИКИ СОБЫТИЙ ============
+        document.getElementById('notification-bell')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifications-dropdown');
+            dropdown.classList.toggle('active');
+            if (dropdown.classList.contains('active')) {
+                loadNotifications();
+            }
+        });
+
+        document.getElementById('mark-all-read-btn')?.addEventListener('click', async () => {
+            try {
+                await fetch(API_BASE + "/notifications/read-all", {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                await loadNotifications();
+            } catch (err) {
+                console.error('Mark all read error:', err);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notifications-dropdown');
+            const bell = document.getElementById('notification-bell');
+            if (dropdown && !dropdown.contains(e.target) && !bell.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // ============ ИНИЦИАЛИЗАЦИЯ ============
+        document.addEventListener('DOMContentLoaded', loadUserHeader);
+    </script>
+
+    <!-- Audio for notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="../assets/audio/notification.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="message-notification-sound" preload="auto">
+        <source src="../assets/audio/message-notification.mp3" type="audio/mpeg">
+    </audio>
+    <script src="../assets/js/analytics.js"></script>
+</body>
+
+</html>

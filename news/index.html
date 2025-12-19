@@ -8,12 +8,1883 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css?v=1">
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
     <link rel="icon" href="../assets/images/Falcone-circle.png" type="image/png">
+
+    <style>
+        :root {
+            --color-primary: #c41e3a;
+            --color-primary-dark: #8b0000;
+            --color-primary-glow: rgba(196, 30, 58, 0.4);
+            --color-bg: #050505;
+            --color-surface: #0a0808;
+            --color-surface-elevated: #120d0e;
+            --color-accent: #ff6b6b;
+            --color-gold: #ffd700;
+            --color-blood: #8b0000;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.2s ease;
+            --glass-bg: rgba(15, 10, 12, 0.9);
+            --glass-border: rgba(139, 0, 0, 0.25);
+        }
+
+        /* Atmospheric Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at top center, rgba(139, 0, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(196, 30, 58, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at top left, rgba(100, 0, 0, 0.1) 0%, transparent 30%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Page Header Enhancement */
+        .page-header {
+            position: relative;
+            overflow: hidden;
+            height: 70vh;
+            align-items: flex-start;
+            padding-top: 8rem;
+        }
+
+        .page-header::before {
+            display: none;
+        }
+
+        .page-header::after {
+            display: none;
+        }
+
+        /* ==================== CLICKABLE NEWSPAPER ==================== */
+        .newspaper-clickable {
+            position: absolute;
+            top: 74%;
+            left: 26%;
+            transform: translate(-50%, -50%) rotate(-6deg);
+            width: 32%;
+            max-width: 400px;
+            height: 38%;
+            max-height: 240px;
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+        }
+
+        .newspaper-clickable::after {
+            content: '🔍';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 3rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 4px 15px rgba(139, 0, 0, 0.8));
+        }
+
+        .newspaper-clickable:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* ==================== NEWSPAPER LIGHTBOX ==================== */
+        .newspaper-lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 99999;
+            cursor: zoom-out;
+            overflow: hidden;
+        }
+
+        .newspaper-lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .newspaper-lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: newspaperZoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .newspaper-lightbox.closing .newspaper-lightbox-content {
+            animation: newspaperZoomOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes newspaperZoomIn {
+            0% {
+                transform: scale(0.3) rotate(-15deg) translateY(100px);
+                opacity: 0;
+                filter: blur(20px);
+            }
+
+            50% {
+                transform: scale(1.05) rotate(2deg) translateY(-10px);
+                opacity: 1;
+                filter: blur(0);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg) translateY(0);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        @keyframes newspaperZoomOut {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+                filter: blur(0);
+            }
+
+            100% {
+                transform: scale(0.3) rotate(15deg) translateY(100px);
+                opacity: 0;
+                filter: blur(20px);
+            }
+        }
+
+        .newspaper-lightbox-img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow:
+                0 0 100px rgba(139, 0, 0, 0.5),
+                0 0 200px rgba(139, 0, 0, 0.3),
+                0 25px 80px rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(139, 0, 0, 0.5);
+        }
+
+        .newspaper-lightbox-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            background: rgba(139, 0, 0, 0.1);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 26px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+        }
+
+        .newspaper-lightbox-close:hover {
+            background: #8b0000;
+            color: white;
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.5);
+        }
+
+        /* Glow particles effect in lightbox */
+        .lightbox-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .lightbox-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(196, 30, 58, 0.8), transparent);
+            border-radius: 50%;
+            animation: floatParticle 4s ease-in-out infinite;
+        }
+
+        .lightbox-particle:nth-child(1) {
+            left: 10%;
+            top: 20%;
+            animation-delay: 0s;
+        }
+
+        .lightbox-particle:nth-child(2) {
+            left: 20%;
+            top: 80%;
+            animation-delay: 0.5s;
+        }
+
+        .lightbox-particle:nth-child(3) {
+            left: 80%;
+            top: 30%;
+            animation-delay: 1s;
+        }
+
+        .lightbox-particle:nth-child(4) {
+            left: 90%;
+            top: 70%;
+            animation-delay: 1.5s;
+        }
+
+        .lightbox-particle:nth-child(5) {
+            left: 50%;
+            top: 10%;
+            animation-delay: 2s;
+        }
+
+        .lightbox-particle:nth-child(6) {
+            left: 30%;
+            top: 50%;
+            animation-delay: 2.5s;
+        }
+
+        .lightbox-particle:nth-child(7) {
+            left: 70%;
+            top: 90%;
+            animation-delay: 3s;
+        }
+
+        .lightbox-particle:nth-child(8) {
+            left: 40%;
+            top: 40%;
+            animation-delay: 3.5s;
+        }
+
+        @keyframes floatParticle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+
+            25% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1);
+            }
+
+            75% {
+                opacity: 0.5;
+                transform: translateY(-60px) scale(0.5);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .newspaper-clickable {
+                width: 40%;
+                max-width: 280px;
+            }
+
+            .newspaper-clickable::after {
+                font-size: 2rem;
+            }
+
+            .newspaper-lightbox-close {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+        }
+
+        /* Floating ember particles */
+        .ember-particles {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 80%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: visible;
+        }
+
+        .ember {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: linear-gradient(135deg, #ff6b6b, #c41e3a);
+            border-radius: 50%;
+            box-shadow: 0 0 6px 2px rgba(255, 100, 100, 0.6);
+            animation: emberFloat 3s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        .ember:nth-child(1) {
+            left: 10%;
+            top: 30%;
+            animation-delay: 0s;
+        }
+
+        .ember:nth-child(2) {
+            left: 85%;
+            top: 20%;
+            animation-delay: 0.5s;
+        }
+
+        .ember:nth-child(3) {
+            left: 90%;
+            top: 60%;
+            animation-delay: 1s;
+        }
+
+        .ember:nth-child(4) {
+            left: 15%;
+            top: 80%;
+            animation-delay: 1.5s;
+        }
+
+        .ember:nth-child(5) {
+            left: 50%;
+            top: 10%;
+            animation-delay: 2s;
+        }
+
+        .ember:nth-child(6) {
+            left: 70%;
+            top: 90%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes emberFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+
+            10% {
+                opacity: 1;
+                transform: translateY(-5px) scale(1);
+            }
+
+            90% {
+                opacity: 0.5;
+                transform: translateY(-30px) scale(0.5);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(0);
+            }
+        }
+
+        /* Ensure page header content is above the animation */
+        .page-header .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Premium News Container */
+        #news-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Contact Button Override - Dark Style */
+        .floating-contact-btn {
+            background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 50%, #1a1a1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .floating-contact-btn:hover {
+            background: linear-gradient(135deg, #2a2a2a 0%, #4a4a4a 50%, #2a2a2a 100%);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
+    <style>
+        /* Admin Create Button - Floating */
+        .admin-create-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: none;
+            transition: var(--transition);
+            z-index: 100;
+            border: none;
+            animation: none;
+        }
+
+        .admin-create-btn:hover {
+            transform: scale(1.2);
+            box-shadow: none;
+        }
+
+        .admin-create-btn::before,
+        .admin-create-btn::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .admin-create-btn::before {
+            width: 30px;
+            height: 3px;
+        }
+
+        .admin-create-btn::after {
+            width: 3px;
+            height: 30px;
+        }
+
+        /* Create News Modal */
+        .create-news-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+
+        .create-news-modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .create-news-content {
+            background: linear-gradient(165deg, rgba(20, 10, 12, 0.98) 0%, rgba(10, 5, 6, 0.99) 100%);
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            border-left: 5px solid var(--color-blood);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7),
+                0 0 120px rgba(139, 0, 0, 0.15),
+                inset 0 0 100px rgba(139, 0, 0, 0.03);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            background: rgba(139, 0, 0, 0.15);
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--color-primary);
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 0 25px rgba(139, 0, 0, 0.5);
+        }
+
+        .create-news-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .form-group label {
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: rgba(139, 0, 0, 0.05);
+            border: 1px solid rgba(139, 0, 0, 0.25);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: rgba(139, 0, 0, 0.1);
+            box-shadow: 0 0 25px rgba(139, 0, 0, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .image-upload-area {
+            border: 2px dashed rgba(139, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(139, 0, 0, 0.03);
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--color-primary);
+            background: rgba(139, 0, 0, 0.1);
+            transform: scale(1.01);
+        }
+
+        .image-upload-area input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 15px rgba(139, 0, 0, 0.6));
+        }
+
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .image-preview-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: var(--color-blood);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: var(--transition);
+            box-shadow: 0 2px 15px rgba(139, 0, 0, 0.5);
+        }
+
+        .remove-image:hover {
+            transform: scale(1.1);
+            background: var(--color-primary);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--color-blood), var(--color-primary));
+            border: none;
+            border-radius: 14px;
+            padding: 1.2rem 2.5rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 6px 25px rgba(139, 0, 0, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(139, 0, 0, 0.6);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==================== NEWS ITEM PREMIUM DESIGN ==================== */
+        .news-item {
+            background: linear-gradient(165deg, rgba(20, 10, 12, 0.95) 0%, rgba(10, 5, 6, 0.98) 100%);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 0;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 80px rgba(139, 0, 0, 0.03);
+        }
+
+        .news-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-blood), var(--color-primary), var(--color-blood), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .news-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(139, 0, 0, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .news-item:hover::before {
+            opacity: 1;
+        }
+
+        .news-item:hover {
+            border-color: rgba(196, 30, 58, 0.5);
+            transform: translateY(-8px) translateX(3px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(139, 0, 0, 0.15),
+                inset 0 0 100px rgba(139, 0, 0, 0.05);
+        }
+
+        .news-item-inner {
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .news-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .news-header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .news-author {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .news-author-avatar {
+            width: 52px;
+            height: 52px;
+            min-width: 52px;
+            min-height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-blood);
+            flex-shrink: 0;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(139, 0, 0, 0.4);
+            margin-top: 3px;
+        }
+
+        .news-author-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(139, 0, 0, 0.6);
+            border-color: var(--color-primary);
+        }
+
+        .news-author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .news-author-name {
+            color: white;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: color 0.3s ease;
+        }
+
+        .news-author-name:hover {
+            color: var(--color-primary);
+        }
+
+        .news-date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .news-date::before {
+            content: '📅';
+            font-size: 0.75rem;
+        }
+
+        .news-tag {
+            background: linear-gradient(135deg, var(--color-blood), var(--color-primary));
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 20px rgba(139, 0, 0, 0.4);
+            transition: var(--transition);
+            border: 1px solid rgba(196, 30, 58, 0.3);
+        }
+
+        .news-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(139, 0, 0, 0.5);
+        }
+
+        .delete-news-btn {
+            background: rgba(139, 0, 0, 0.15);
+            color: #ff8a80;
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .delete-news-btn:hover {
+            background: rgba(139, 0, 0, 0.3);
+            border-color: rgba(196, 30, 58, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .news-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            line-height: 1.3;
+            position: relative;
+            display: inline-block;
+        }
+
+        .news-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-blood), var(--color-primary));
+            border-radius: 2px;
+        }
+
+        .news-content {
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        /* News Images Gallery */
+        .news-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .news-image {
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+        }
+
+        .news-image::after {
+            content: '🔍';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 2rem;
+            opacity: 0;
+            transition: var(--transition);
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .news-image:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 0, 0, 0.2);
+            border-color: rgba(196, 30, 58, 0.4);
+        }
+
+        .news-image:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .news-image:hover img {
+            filter: brightness(0.75);
+        }
+
+        /* News Actions Bar */
+        .news-actions {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(139, 0, 0, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(139, 0, 0, 0.08);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+            border-radius: 30px;
+            padding: 0.6rem 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: rgba(139, 0, 0, 0.15);
+            border-color: rgba(196, 30, 58, 0.4);
+            color: var(--color-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.2);
+        }
+
+        .action-btn.liked {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.25), rgba(196, 30, 58, 0.2));
+            border-color: rgba(196, 30, 58, 0.5);
+            color: var(--color-primary);
+        }
+
+        .action-btn.liked svg {
+            animation: heartBeat 0.3s ease;
+        }
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        .action-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            transition: var(--transition-fast);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(165deg, rgba(15, 8, 10, 0.9) 0%, rgba(10, 5, 6, 0.95) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 0, 0, 0.2);
+            border-left: 4px solid var(--color-blood);
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-end;
+        }
+
+        .comment-input-area textarea {
+            flex: 1;
+            background: rgba(139, 0, 0, 0.05);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+            border-radius: 14px;
+            padding: 1rem;
+            color: white;
+            font-family: inherit;
+            resize: none;
+            height: 70px;
+            transition: var(--transition);
+        }
+
+        .comment-input-area textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background: rgba(139, 0, 0, 0.1);
+            box-shadow: 0 0 25px rgba(139, 0, 0, 0.15);
+        }
+
+        .comment-submit-btn {
+            background: linear-gradient(135deg, var(--color-blood), var(--color-primary));
+            border: none;
+            border-radius: 14px;
+            padding: 1rem 1.8rem;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        .comment-submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(139, 0, 0, 0.5);
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background: rgba(139, 0, 0, 0.05);
+            border-radius: 14px;
+            border: 1px solid rgba(139, 0, 0, 0.15);
+            transition: var(--transition);
+        }
+
+        .comment-item:hover {
+            background: rgba(139, 0, 0, 0.1);
+            border-color: rgba(196, 30, 58, 0.25);
+            transform: translateX(5px);
+        }
+
+        .comment-avatar {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-blood);
+            box-shadow: 0 3px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+            transition: color 0.3s ease;
+        }
+
+        .comment-author:hover {
+            color: var(--color-primary);
+        }
+
+        .comment-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .comment-text .mention {
+            color: var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .comment-text .mention:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+        }
+
+        .comment-date {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .delete-news-btn {
+            background: rgba(139, 0, 0, 0.15);
+            border: 1px solid rgba(139, 0, 0, 0.4);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .delete-news-btn:hover {
+            background: var(--color-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(139, 0, 0, 0.4);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--color-primary);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(139, 0, 0, 0.3);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Fullscreen Image Overlay */
+        .image-fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+
+        .image-fullscreen-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .image-fullscreen-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(139, 0, 0, 0.2);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+        }
+
+        .news-image {
+            cursor: zoom-in;
+        }
+
+        /* Notification System */
+        .notification-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notification-bell:hover {
+            background: rgba(255, 23, 68, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .notification-bell svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 2px solid var(--color-bg);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(255, 23, 68, 0);
+            }
+        }
+
+        .notifications-dropdown {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 380px;
+            max-height: calc(100vh - 120px);
+            background: linear-gradient(165deg, var(--color-surface-elevated), var(--color-surface));
+            border: 1px solid rgba(255, 23, 68, 0.2);
+            border-radius: 20px;
+            overflow-y: auto;
+            z-index: 10000;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 23, 68, 0.1);
+        }
+
+        .notifications-dropdown.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notifications-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 23, 68, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 23, 68, 0.05);
+        }
+
+        .notifications-header h3 {
+            color: white;
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .mark-all-read {
+            color: var(--color-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .mark-all-read:hover {
+            text-decoration: underline;
+        }
+
+        .notification-item {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 23, 68, 0.08);
+        }
+
+        .notification-item.unread {
+            background: rgba(255, 23, 68, 0.1);
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            box-shadow: 0 0 8px var(--color-primary);
+        }
+
+        .notification-title {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .notification-message {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .notification-time {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+        }
+
+        .no-notifications {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            background: linear-gradient(165deg, var(--color-surface-elevated), var(--color-surface));
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            border-radius: 18px;
+            padding: 1.2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            min-width: 320px;
+            max-width: 420px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 23, 68, 0.15);
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10000;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(450px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-notification.hide {
+            animation: slideOut 0.3s ease forwards;
+        }
+
+        @keyframes slideOut {
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-primary);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-name {
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .toast-message {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .notifications-dropdown {
+                position: fixed;
+                top: 70px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+                max-height: calc(100vh - 100px);
+            }
+
+            .toast-notification {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                max-width: none;
+            }
+        }
+
+        /* Media Upload Tabs (Video support) */
+        .media-upload-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .media-tab {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .media-tab.active {
+            background: rgba(255, 23, 68, 0.1);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .media-tab:hover {
+            border-color: var(--color-primary);
+        }
+
+        .media-upload-content {
+            display: none;
+        }
+
+        .media-upload-content.active {
+            display: block;
+        }
+
+        .upload-limits {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .file-counter {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        .file-counter.warning {
+            color: #ff9800;
+        }
+
+        .file-counter.error {
+            color: #f44336;
+        }
+
+        .video-preview-item {
+            position: relative;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            background: black;
+        }
+
+        .video-preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* ==================== COMPACT MEDIA DISPLAY ==================== */
+        .news-media-container {
+            margin: 1.5rem 0;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .news-media-container:hover {
+            border-color: rgba(255, 23, 68, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .media-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+        }
+
+        .media-header:hover {
+            background: rgba(255, 23, 68, 0.05);
+        }
+
+        .media-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .media-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 23, 68, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .media-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .media-title {
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .media-count {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        .media-toggle {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 23, 68, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .media-toggle.active {
+            transform: rotate(180deg);
+            background: rgba(255, 23, 68, 0.2);
+        }
+
+        .media-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .media-content.active {
+            max-height: 5000px;
+        }
+
+        .media-content-inner {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .news-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .news-image-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .news-image-item::after {
+            content: '🔍';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 1.8rem;
+            opacity: 0;
+            transition: var(--transition);
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .news-image-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 23, 68, 0.15);
+        }
+
+        .news-image-item:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .news-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .news-image-item:hover img {
+            filter: brightness(0.7);
+            transform: scale(1.05);
+        }
+
+        .news-videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .news-video-item {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            background: black;
+            transition: var(--transition);
+        }
+
+        .news-video-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 23, 68, 0.15);
+        }
+
+        .news-video-item video {
+            width: 100%;
+            max-height: 400px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .media-separator {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 1.5rem 0;
+        }
+
+        /* Improved Fullscreen Close Button */
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 23, 68, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 10000;
+        }
+
+        .fullscreen-close:hover {
+            background: var(--color-primary);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .news-images-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 0.6rem;
+            }
+
+            .news-videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .media-header {
+                padding: 0.8rem 1rem;
+            }
+
+            .media-content-inner {
+                padding: 0 1rem 1rem 1rem;
+            }
+        }
+
+        .comment-context-menu {
+            position: absolute;
+            background: linear-gradient(165deg, #1a1a1a, #0d0d0d);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 0.5rem;
+            z-index: 1000;
+            min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(139, 0, 0, 0.2);
+            animation: menuAppear 0.2s ease;
+        }
+
+        @keyframes menuAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .context-menu-item:hover {
+            background: rgba(139, 0, 0, 0.15);
+            color: white;
+        }
+
+        .context-menu-item.delete-item {
+            color: #ff8a80;
+        }
+
+        .context-menu-item.delete-item:hover {
+            background: rgba(255, 23, 68, 0.15);
+            color: #ff5252;
+        }
+
+        .context-menu-item svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* Comment Header with Menu Button */
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.3rem;
+        }
+
+        .comment-menu-btn {
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            line-height: 1;
+            background: none;
+            border: none;
+        }
+
+        .comment-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Comment Footer with Actions */
+        .comment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .comment-like-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(139, 0, 0, 0.08);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .comment-like-btn:hover:not(:disabled) {
+            background: rgba(139, 0, 0, 0.15);
+            border-color: rgba(196, 30, 58, 0.4);
+            color: var(--color-primary);
+            transform: translateY(-1px);
+        }
+
+        .comment-like-btn.liked {
+            background: rgba(139, 0, 0, 0.25);
+            border-color: rgba(196, 30, 58, 0.5);
+            color: var(--color-primary);
+        }
+
+        .comment-like-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .comment-like-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .reset-date-btn {
+            background: rgba(139, 0, 0, 0.15);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .reset-date-btn:hover {
+            background: rgba(139, 0, 0, 0.25);
+            border-color: rgba(196, 30, 58, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Page Loader -->
     <div id="page-loader">
         <div class="loader-content">
             <div class="loader-text">Ждать. Идет загрузка.</div>
@@ -31,192 +1902,227 @@
             </div>
         </div>
     </div>
+
     <header class="topbar">
         <div class="container topbar-inner">
             <div class="brand">
                 <a href="../homepage">
                     <div class="logo-mark"
-                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;">
-                    </div>
+                        style="background: url('../assets/images/Falcone.png') no-repeat center/cover;"></div>
                     <span class="brand-title">Dom Falcone</span>
                 </a>
             </div>
+
+            <!-- Desktop Navigation -->
             <nav class="nav">
                 <a href="../about">О доме</a>
                 <a href="../history">История</a>
                 <a href="../enemies">Противники</a>
-                <a href="../news" class="active">Новости</a>
+                <a href="../news">Новости</a>
             </nav>
-            <div class="auth-action">
-                <a href="../login" class="btn-login" id="auth-btn">Войти</a>
+
+            <!-- Burger Menu Button -->
+            <div class="burger-menu" id="burger-menu">
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+                <div class="burger-line"></div>
+            </div>
+
+            <!-- Кнопка "Войти" (показывается когда не авторизован) -->
+            <div class="auth-action" id="auth-action" style="display: none;">
+                <a href="../login" class="btn-login">Войти</a>
+            </div>
+
+            <!-- User Menu (показывается когда авторизован) -->
+            <div class="user-menu" id="user-menu" style="display: none;">
+                <!-- Кнопка сообщений -->
+                <div style="position: relative;">
+                    <a href="../messages" class="notification-bell" style="text-decoration: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M6,9H18V11H6M14,14H6V12H14M18,8H6V6H18" />
+                        </svg>
+                        <span class="notification-badge" id="messages-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+
+                <!-- Кнопка уведомлений -->
+                <div style="position: relative;">
+                    <div class="notification-bell" id="notification-bell">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,22A2,2 0 0,1 10,20H14A2,2 0 0,1 12,22M18,16V11C18,7.93 16.37,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16M12,6A5,5 0 0,1 17,11V17H7V11A5,5 0 0,1 12,6Z" />
+                        </svg>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </div>
+
+                    <!-- Выпадающий список уведомлений -->
+                    <div class="notifications-dropdown" id="notifications-dropdown">
+                        <div class="notifications-header">
+                            <h3>Уведомления</h3>
+                            <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                        </div>
+                        <div id="notifications-list">
+                            <div class="no-notifications">Нет уведомлений</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Профиль пользователя -->
+                <a href="../dashboard" class="user-profile-info">
+                    <img src="" alt="Avatar" id="header-avatar" class="header-avatar">
+                    <div class="user-details">
+                        <span class="user-display-name" id="header-display-name">User</span>
+                        <div class="user-points-badge">
+                            <span>⭐</span>
+                            <span id="header-points">0</span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </header>
 
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-links">
+            <a href="../about">О доме</a>
+            <a href="../history">История</a>
+            <a href="../enemies">Противники</a>
+            <a href="../news">Новости</a>
+            <a href="../dashboard" class="mobile-nav-profile">Профиль</a>
+            <a href="../messages" class="mobile-nav-messages">Сообщения</a>
+        </div>
+        <div class="mobile-nav-footer">
+            <div class="site-version"></div>
+        </div>
+    </nav>
+
+
     <div class="page-header"
-        style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url('../assets/images/news-background.jpg') center/cover no-repeat; background-position: center 55%;">
-        <div class="container">
+        style="background: url('../assets/images/news-background.png') center/cover no-repeat; background-position: center 20%;">
+        <div class="container" style="text-align: center;">
             <h1>Хроники Дома</h1>
             <p>Последние вести с полей сражений и жизни Семьи</p>
         </div>
     </div>
 
-    <main class="content-section">
-        <div class="container">
+    <!-- Clickable Newspaper Zone -->
+    <div class="newspaper-clickable" id="newspaper-clickable" title="Нажмите, чтобы открыть газету"></div>
 
-            <!-- Featured News -->
-            <div class="featured-news animate-fade-up">
-                <div class="featured-news-content">
-                    <div class="news-tag">Важное</div>
-                    <div class="news-date">21 Ноября 2025</div>
-                    <h2>Расширение влияния: Рейд на Эдеку</h2>
-                    <p>В прошлую пятницу состоялся стратегически важный визит в местную Эдеку. Представители Дома
-                        Фальконе провели инспекцию пивного отдела и оценили запасы противника. Были выявлены новые
-                        потенциальные угрозы в виде скидок на крепкий алкоголь.</p>
-                    <p>Кандидаты на вступление проявили себя достойно, удерживая позиции в очереди на кассу. Операция
-                        прошла успешно, ресурсы были захвачены без потерь.</p>
-                    <a href="#" class="btn-text read-more-btn">Читать полностью &rarr;</a>
-
-                    <!-- Full Content (Hidden) -->
-                    <div class="news-full-content">
-                        <p>В прошлую пятницу состоялся стратегически важный визит в местную Эдеку. Представители Дома
-                            Фальконе провели инспекцию пивного отдела и оценили запасы противника. Были выявлены новые
-                            потенциальные угрозы в виде скидок на крепкий алкоголь.</p>
-                        <p>Кандидаты на вступление проявили себя достойно, удерживая позиции в очереди на кассу.
-                            Операция прошла успешно, ресурсы были захвачены без потерь. Мы продолжаем расширять наше
-                            влияние и укреплять позиции в регионе.</p>
-                        <p>Особая благодарность выражается всем участникам рейда за проявленную дисциплину и выдержку.
-                            Впереди нас ждут новые свершения и победы!</p>
-
-                        <div class="news-modal-gallery">
-                            <div class="gallery-item">
-                                <img src="../assets/images/history12.jpg" alt="Собрание">
-                            </div>
-                            <div class="gallery-item">
-                                <img src="../assets/images/history8.jpg" alt="Кальян">
-                            </div>
-                            <div class="gallery-item">
-                                <img src="../assets/images/history7.jpg" alt="Победа">
-                            </div>
-                            <div class="gallery-item">
-                                <img src="../assets/images/history1.jpg" alt="Архив">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- News Grid -->
-            <div class="news-grid">
-                <!-- News Item 1 -->
-                <div class="news-card animate-fade-up">
-                    <div class="news-card-content">
-                        <div class="news-date">14 Ноября 2025</div>
-                        <h3>Традиционный сбор: Дым и Пламя</h3>
-                        <p>Очередное заседание прошло под эгидой густого дыма. Новый табак "Ледяной Арбуз" был успешно
-                            протестирован и одобрен Доном. Атмосфера способствовала глубоким философским беседам о
-                            будущем Семьи.</p>
-                        <a href="#" class="btn-text read-more-btn">Подробнее</a>
-
-                        <!-- Full Content (Hidden) -->
-                        <div class="news-full-content">
-                            <p>Очередное заседание прошло под эгидой густого дыма. Новый табак "Ледяной Арбуз" был
-                                успешно протестирован и одобрен Доном. Атмосфера способствовала глубоким философским
-                                беседам о будущем Семьи.</p>
-                            <p>Обсуждались планы на ближайший месяц, а также стратегии по укреплению братства. Каждый
-                                член Дома высказал свое мнение, и были приняты важные решения.</p>
-
-                            <div class="news-modal-gallery">
-                                <div class="gallery-item">
-                                    <img src="../assets/images/history5.jpg" alt="Фото 5">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="../assets/images/history4.jpg" alt="Фото 4">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="../assets/images/history3.jpg" alt="Фото 3">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News Item 2 -->
-                <div class="news-card animate-fade-up">
-                    <div class="news-card-content">
-                        <div class="news-date">07 Ноября 2025</div>
-                        <h3>Отчет о боевых действиях</h3>
-                        <p>Битва с "ThreeSixty" завершилась безоговорочной победой Дома. Потери минимальны, моральный
-                            дух на высоте. Противник был уничтожен полностью, трофеи (пустые бутылки) утилизированы
-                            согласно протоколу.</p>
-                        <a href="#" class="btn-text read-more-btn">Подробнее</a>
-
-                        <!-- Full Content (Hidden) -->
-                        <div class="news-full-content">
-                            <p>Битва с "ThreeSixty" завершилась безоговорочной победой Дома. Потери минимальны,
-                                моральный дух на высоте. Противник был уничтожен полностью, трофеи (пустые бутылки)
-                                утилизированы согласно протоколу.</p>
-                            <p>Это была славная битва, которая войдет в историю Дома Фальконе как пример мужества и
-                                стойкости наших бойцов.</p>
-
-                            <div class="news-modal-gallery">
-                                <div class="gallery-item">
-                                    <img src="../assets/images/history7.jpg" alt="Победа">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News Item 3 -->
-                <div class="news-card animate-fade-up">
-                    <div class="news-card-content">
-                        <div class="news-date">31 Октября 2025</div>
-                        <h3>Вспоминая истоки</h3>
-                        <p>В преддверии месяца основания, мы публикуем архивные записи первых дней формирования нашего
-                            братства. Это напоминание о том, с чего все начиналось и какой путь мы прошли.</p>
-                        <a href="#" class="btn-text read-more-btn">Подробнее</a>
-
-                        <!-- Full Content (Hidden) -->
-                        <div class="news-full-content">
-                            <p>В преддверии месяца основания, мы публикуем архивные записи первых дней формирования
-                                нашего братства. Это напоминание о том, с чего все начиналось и какой путь мы прошли.
-                            </p>
-                            <p>Мы помним каждого, кто стоял у истоков, и чтим традиции, заложенные в те дни. Una Fides,
-                                Unus Dominus!</p>
-
-                            <div class="news-modal-gallery">
-                                <div class="gallery-item">
-                                    <img src="../assets/images/history1.jpg" alt="Архив">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <!-- Newspaper Lightbox Overlay -->
+    <div class="newspaper-lightbox" id="newspaper-lightbox">
+        <div class="lightbox-particles">
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
+            <div class="lightbox-particle"></div>
         </div>
-    </main>
-
-    <!-- News Modal -->
-    <div id="news-modal">
-        <div class="news-modal-content">
-            <button class="news-modal-close">&times;</button>
-            <div class="news-modal-scroll-container">
-                <div class="news-modal-body">
-                    <div class="news-modal-header">
-                        <div class="news-modal-date"></div>
-                        <h2 class="news-modal-title"></h2>
-                    </div>
-                    <div class="news-modal-text"></div>
-                </div>
-            </div>
+        <button class="newspaper-lightbox-close" id="newspaper-lightbox-close">&times;</button>
+        <div class="newspaper-lightbox-content">
+            <img src="../assets/images/newspaper-fullsize.png" alt="Dom Falcone News" class="newspaper-lightbox-img">
         </div>
     </div>
 
+    <main class="content-section">
+        <div class="container">
+            <div id="news-container"></div>
+        </div>
+    </main>
+
+    <button class="admin-create-btn" id="admin-create-btn" style="display: none;"></button>
+
+    <div class="create-news-modal" id="create-news-modal">
+        <div class="create-news-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <h2 style="color: white; margin-bottom: 1.5rem;">Создать новость</h2>
+            <form class="create-news-form" id="create-news-form">
+                <div class="form-group">
+                    <label>Тег</label>
+                    <select id="news-tag" required>
+                        <option value="Важное">Важное</option>
+                        <option value="Новости">Новости</option>
+                        <option value="Объявление">Объявление</option>
+                        <option value="События">События</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Дата публикации</label>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="datetime-local" id="news-date" style="flex: 1;">
+                        <button type="button" class="reset-date-btn" onclick="resetNewsDate()">Сейчас</button>
+                    </div>
+                    <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem; margin-top: 0.5rem;">
+                        Оставьте пустым для текущей даты и времени
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Заголовок</label>
+                    <input type="text" id="news-title" placeholder="Введите заголовок новости" required>
+                </div>
+                <div class="form-group">
+                    <label>Содержание</label>
+                    <textarea id="news-content" placeholder="Напишите текст новости..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Медиафайлы</label>
+                    <div class="media-upload-tabs">
+                        <div class="media-tab active" data-tab="images">📸 Изображения</div>
+                        <div class="media-tab" data-tab="videos">🎬 Видео</div>
+                    </div>
+
+                    <!-- Изображения -->
+                    <div class="media-upload-content active" id="images-content">
+                        <div class="image-upload-area" id="image-upload-area">
+                            <input type="file" id="image-input" accept="image/*" multiple>
+                            <div class="upload-icon">📸</div>
+                            <p style="color: rgba(255, 255, 255, 0.6);">Нажмите, чтобы загрузить изображения</p>
+                            <p class="upload-limits">Максимум 10 изображений по 10MB каждое</p>
+                        </div>
+                        <div class="file-counter" id="images-counter">0 / 10 изображений</div>
+                        <div class="image-preview-grid" id="image-preview-grid"></div>
+                    </div>
+
+                    <!-- Видео -->
+                    <div class="media-upload-content" id="videos-content">
+                        <div class="image-upload-area" id="video-upload-area">
+                            <input type="file" id="video-input" accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                                multiple>
+                            <div class="upload-icon">🎬</div>
+                            <p style="color: rgba(255, 255, 255, 0.6);">Нажмите, чтобы загрузить видео</p>
+                            <p class="upload-limits">Максимум 10 видео по 100MB каждое (MP4, WebM, OGG, MOV)</p>
+                        </div>
+                        <div class="file-counter" id="videos-counter">0 / 10 видео</div>
+                        <div class="image-preview-grid" id="video-preview-grid"></div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Опубликовать новость</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
-            <small>© Дом Фальконе — 2025. Все права защищены. Прям реально защищены.</small>
+            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <div class="site-version"></div>
+            <div class="footer-links">
+                <a href="../faq">FAQ</a>
+                <a href="../privacy">Политика конфиденциальности</a>
+                <a href="../agreement">Пользовательское соглашение</a>
+                <a href="../imprint">Сведения о владельце сайта</a>
+                <a href="../developers">Разработчики</a>
+                <a href="../hymn">Герб и Гимн</a>
+            </div>
         </div>
     </footer>
 
@@ -225,7 +2131,1459 @@
         <span class="btn-text">Связаться с Домом</span>
     </a>
 
-    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/main.js?v=6"></script>
+    <script>
+        const API_BASE = "https://dom-falcone-auth.dom-falcone-official.workers.dev/api";
+        const token = localStorage.getItem('auth_token');
+        let currentUser = null;
+        let uploadedImages = [];
+        let uploadedVideos = [];
+
+        const MAX_IMAGES = 10;
+        const MAX_VIDEOS = 10;
+        const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+        const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
+        const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
+
+        // Media tabs switching
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.media-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+
+                    document.querySelectorAll('.media-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.media-upload-content').forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(tabName + '-content').classList.add('active');
+                });
+            });
+        });
+
+        // ============ SYNCHRONOUS AUTH CHECK (prevents flash) ============
+        (function syncAuthCheck() {
+            const authAction = document.getElementById('auth-action');
+            const userMenu = document.getElementById('user-menu');
+
+            if (token) {
+                if (authAction) authAction.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (authAction) authAction.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        })();
+
+        async function loadUserHeader() {
+            if (!token) {
+                document.getElementById('auth-action').style.display = 'block';
+                document.getElementById('user-menu').style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + "/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    currentUser = await res.json();
+                    document.getElementById('auth-action').style.display = 'none';
+                    document.getElementById('user-menu').style.display = 'flex';
+                    document.getElementById('header-display-name').textContent = currentUser.display_name || currentUser.email.split('@')[0];
+                    document.getElementById('header-points').textContent = currentUser.points || 0;
+
+                    const avatar = document.getElementById('header-avatar');
+                    if (currentUser.avatar_url) {
+                        avatar.src = currentUser.avatar_url;
+                    } else {
+                        const initial = currentUser.display_name ? currentUser.display_name[0].toUpperCase() : 'U';
+                        avatar.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23ff1744' width='40' height='40'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+                    }
+
+                    if (currentUser.role === 'admin') {
+                        document.getElementById('admin-create-btn').style.display = 'flex';
+                    }
+
+                    // ДОБАВЬТЕ ЭТИ 4 СТРОКИ СЮДА:
+                    loadNotifications();
+                    if (notificationsInterval) clearInterval(notificationsInterval);
+                    notificationsInterval = setInterval(loadNotifications, 30000);
+
+                    // ========== ДОБАВЬТЕ ЭТИ СТРОКИ ==========
+                    loadUnreadMessagesCount();
+                    if (messagesCheckInterval) clearInterval(messagesCheckInterval);
+                    messagesCheckInterval = setInterval(checkNewMessages, 5000);
+                    // =========================================
+
+                } else {
+                    localStorage.removeItem('auth_token');
+                    document.getElementById('auth-action').style.display = 'block';
+                    document.getElementById('user-menu').style.display = 'none';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        async function loadNews() {
+            try {
+                const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+                const res = await fetch(API_BASE + "/news", { headers });
+                const data = await res.json();
+                const container = document.getElementById('news-container');
+                container.innerHTML = '';
+
+                if (data.news && data.news.length > 0) {
+                    data.news.forEach(news => {
+                        container.appendChild(createNewsCard(news));
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: rgba(255, 255, 255, 0.5);">Новостей пока нет</p>';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                const container = document.getElementById('news-container');
+                container.innerHTML = '<p style="text-align: center; color: rgba(255, 255, 255, 0.5);">Ошибка загрузки новостей</p>';
+            } finally {
+                // Loader wird in DOMContentLoaded versteckt
+            }
+        }
+
+        function createNewsCard(news) {
+            const card = document.createElement('div');
+            card.className = 'news-item';
+            const date = new Date(news.created_at).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+            const canDelete = currentUser && currentUser.role === 'admin';
+
+            // Prepare compact media display
+            let mediaHTML = '';
+
+            if (news.images.length > 0 || (news.videos && news.videos.length > 0)) {
+                mediaHTML = `
+                    <div class="news-media-container">
+                        <div class="media-header" onclick="toggleMediaContent(${news.id})">
+                            <div class="media-header-left">
+                                <div class="media-icon">
+                                    <img src="../assets/images/media-icon.png" alt="Media" style="width: 28px; height: 28px; filter: invert(1);">
+                                </div>
+                                <div class="media-info">
+                                    <div class="media-title">Медиафайлы</div>
+                                    <div class="media-count">
+                                        ${news.images.length > 0 ? news.images.length + ' фото' : ''}
+                                        ${news.images.length > 0 && news.videos?.length > 0 ? ' • ' : ''}
+                                        ${news.videos?.length > 0 ? news.videos.length + ' видео' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="media-toggle" id="media-toggle-${news.id}">▼</div>
+                        </div>
+                        <div class="media-content" id="media-content-${news.id}">
+                            <div class="media-content-inner">
+                                ${news.images.length > 0 ? `
+                                    <div class="news-images-grid">
+                                        ${news.images.map((img, idx) => `
+                                            <div class="news-image-item" onclick="openImageFullscreen('${img}')">
+                                                <img src="${img}" alt="Изображение ${idx + 1}" loading="lazy">
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                                
+                                ${news.images.length > 0 && news.videos?.length > 0 ? '<div class="media-separator"></div>' : ''}
+                                
+                                ${news.videos && news.videos.length > 0 ? `
+                                    <div class="news-videos-grid">
+                                        ${news.videos.map((video, idx) => `
+                                            <div class="news-video-item">
+                                                <video controls preload="metadata">
+                                                    <source src="${video}">
+                                                    Ваш браузер не поддерживает воспроизведение видео.
+                                                </video>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="news-item-inner">
+                    <div class="news-header">
+                        <div class="news-author">
+                            <img src="${news.author_avatar || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'%3E%3Crect fill=\'%23ff1744\' width=\'50\' height=\'50\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'white\' font-size=\'22\' font-family=\'Arial\'%3E?%3C/text%3E%3C/svg%3E'}" class="news-author-avatar" alt="">
+                            <div class="news-author-info">
+                                <div class="news-author-name">${escapeHtml(news.author_name)}</div>
+                                <div class="news-date">${date}</div>
+                            </div>
+                        </div>
+                        <div class="news-header-actions">
+                            <div class="news-tag">${escapeHtml(news.tag)}</div>
+                            ${canDelete ? `<button class="delete-news-btn" onclick="deleteNews(${news.id})">Удалить</button>` : ''}
+                        </div>
+                    </div>
+                    <h2 class="news-title">${escapeHtml(news.title)}</h2>
+                    <div class="news-content">${escapeHtml(news.content).replace(/\n/g, '<br>')}</div>
+                    
+                    ${mediaHTML}
+                    
+                    <div class="news-actions">
+                        <button class="action-btn ${news.user_liked ? 'liked' : ''}" onclick="toggleLike(${news.id}, this)">
+                            <svg viewBox="0 0 24 24"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/></svg>
+                            <span>${news.likes_count}</span>
+                        </button>
+                        <button class="action-btn" onclick="toggleComments(${news.id})">
+                            <svg viewBox="0 0 24 24"><path d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22H9Z"/></svg>
+                            <span>${news.comments_count}</span>
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${news.id}" style="display: none;"></div>
+                </div>
+            `;
+            return card;
+        }
+
+        function toggleMediaContent(newsId) {
+            const content = document.getElementById(`media-content-${newsId}`);
+            const toggle = document.getElementById(`media-toggle-${newsId}`);
+
+            content.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+        async function toggleLike(newsId, button) {
+            if (!token) {
+                showErrorModal('Войдите, чтобы ставить лайки');
+                return;
+            }
+            try {
+                const res = await fetch(API_BASE + "/news/like", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ newsId })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    button.classList.toggle('liked', data.liked);
+                    const countSpan = button.querySelector('span');
+                    countSpan.textContent = data.liked ? parseInt(countSpan.textContent) + 1 : parseInt(countSpan.textContent) - 1;
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        async function toggleComments(newsId) {
+            const section = document.getElementById(`comments-${newsId}`);
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                await loadComments(newsId);
+            } else {
+                section.style.display = 'none';
+            }
+        }
+
+        async function loadComments(newsId) {
+            try {
+                const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+                const res = await fetch(API_BASE + `/news/${newsId}`, { headers });
+                const data = await res.json();
+                const section = document.getElementById(`comments-${newsId}`);
+
+                let html = token ? `
+            <div class="comment-input-area">
+                <textarea placeholder="Написать комментарий..." id="comment-input-${newsId}"></textarea>
+                <button class="comment-submit-btn" onclick="postComment(${newsId})">Отправить</button>
+            </div>
+        ` : '';
+
+                if (data.comments && data.comments.length > 0) {
+                    data.comments.forEach(comment => {
+                        const commentDate = new Date(comment.created_at).toLocaleString('ru-RU');
+                        const processedContent = escapeHtml(comment.content).replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+                        const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Crect fill='%23ff1744' width='36' height='36'/%3E%3C/svg%3E";
+
+                        const canModify = currentUser && (comment.user_id === currentUser.id || currentUser.role === 'admin');
+
+                        html += `
+                    <div class="comment-item" id="comment-${comment.id}">
+                        <img src="${comment.avatar || defaultAvatar}" class="comment-avatar">
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-author">${escapeHtml(comment.display_name)}</div>
+                                ${canModify ? `
+                                    <div class="comment-menu-btn" onclick="showCommentMenu(event, ${comment.id})">⋮</div>
+                                ` : ''}
+                            </div>
+                            <div class="comment-text" id="comment-text-${comment.id}">${processedContent}</div>
+                            <div class="comment-footer">
+                                <div class="comment-date">${commentDate}</div>
+                                <div class="comment-actions">
+                                    <button class="comment-like-btn ${comment.user_liked ? 'liked' : ''}" 
+                                            onclick="toggleCommentLike(${comment.id}, this)"
+                                            ${!token ? 'disabled' : ''}>
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/>
+                                        </svg>
+                                        <span>${comment.likes_count || 0}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                    });
+                }
+                section.innerHTML = html;
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        async function postComment(newsId) {
+            const textarea = document.getElementById(`comment-input-${newsId}`);
+            const content = textarea.value.trim();
+            if (!content) return;
+            try {
+                const res = await fetch(API_BASE + "/news/comment", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ newsId, content })
+                });
+                if (res.ok) {
+                    textarea.value = '';
+                    await loadComments(newsId);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        let commentMenuOpen = null;
+
+        function showCommentMenu(event, commentId) {
+            event.stopPropagation();
+            closeCommentMenu();
+
+            const menu = document.createElement('div');
+            menu.className = 'comment-context-menu';
+            menu.id = 'comment-context-menu';
+
+            const comment = document.getElementById(`comment-${commentId}`);
+            const isOwn = currentUser && comment.querySelector('.comment-author').textContent === currentUser.display_name;
+
+            menu.innerHTML = `
+        ${isOwn ? `
+            <div class="context-menu-item" onclick="editComment(${commentId}, event)">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                </svg>
+                Редактировать
+            </div>
+        ` : ''}
+        <div class="context-menu-item delete-item" onclick="deleteComment(${commentId}, event)">
+            <svg viewBox="0 0 24 24">
+                <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+            </svg>
+            Удалить
+        </div>
+    `;
+
+            document.body.appendChild(menu);
+
+            const rect = event.target.getBoundingClientRect();
+            menu.style.position = 'fixed';
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + 5) + 'px';
+
+            const menuRect = menu.getBoundingClientRect();
+            if (menuRect.right > window.innerWidth) {
+                menu.style.left = (rect.right - menuRect.width) + 'px';
+            }
+            if (menuRect.bottom > window.innerHeight) {
+                menu.style.top = (rect.top - menuRect.height - 5) + 'px';
+            }
+
+            commentMenuOpen = commentId;
+        }
+
+        function closeCommentMenu() {
+            const menu = document.getElementById('comment-context-menu');
+            if (menu) menu.remove();
+            commentMenuOpen = null;
+        }
+
+        async function editComment(commentId, event) {
+            event.stopPropagation();
+            closeCommentMenu();
+
+            const textEl = document.getElementById(`comment-text-${commentId}`);
+            const originalText = textEl.innerHTML.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
+
+            const newText = prompt('Редактировать комментарий:', originalText);
+            if (!newText || newText.trim() === originalText.trim()) return;
+
+            try {
+                const res = await fetch(API_BASE + `/comments/${commentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ content: newText.trim() })
+                });
+
+                if (res.ok) {
+                    textEl.innerHTML = escapeHtml(newText.trim()).replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+                } else {
+                    alert('Ошибка редактирования');
+                }
+            } catch (err) {
+                console.error('Edit error:', err);
+                alert('Ошибка редактирования');
+            }
+        }
+
+        async function deleteComment(commentId, event) {
+            event.stopPropagation();
+            closeCommentMenu();
+
+            if (!confirm('Удалить комментарий?')) return;
+
+            try {
+                const res = await fetch(API_BASE + `/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (res.ok) {
+                    document.getElementById(`comment-${commentId}`).remove();
+                } else {
+                    alert('Ошибка удаления');
+                }
+            } catch (err) {
+                console.error('Delete error:', err);
+                alert('Ошибка удаления');
+            }
+        }
+
+        async function toggleCommentLike(commentId, button) {
+            if (!token) {
+                showErrorModal('Войдите, чтобы ставить лайки');
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + "/comments/like", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ commentId })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    button.classList.toggle('liked', data.liked);
+                    button.querySelector('span').textContent = data.likes_count;
+                }
+            } catch (err) {
+                console.error('Toggle like error:', err);
+            }
+        }
+
+        document.addEventListener('click', () => {
+            if (commentMenuOpen) closeCommentMenu();
+        });
+
+        document.addEventListener('scroll', closeCommentMenu, true);
+
+        async function deleteNews(newsId) {
+            const confirmed = await showConfirmModal('Удалить новость?');
+            if (!confirmed) return;
+            try {
+                const res = await fetch(API_BASE + `/news/${newsId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (res.ok) {
+                    showSuccessModal('Новость удалена');
+                    await loadNews();
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        document.getElementById('admin-create-btn')?.addEventListener('click', () => {
+            document.getElementById('create-news-modal').classList.add('active');
+        });
+
+        document.getElementById('modal-close').addEventListener('click', () => {
+            document.getElementById('create-news-modal').classList.remove('active');
+        });
+
+        document.getElementById('image-upload-area').addEventListener('click', () => {
+            document.getElementById('image-input').click();
+        });
+
+        // Image upload handler
+        document.getElementById('image-input').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            const previewGrid = document.getElementById('image-preview-grid');
+
+            for (const file of files) {
+                if (uploadedImages.length >= MAX_IMAGES) {
+                    showErrorModal(`Максимум ${MAX_IMAGES} изображений`);
+                    break;
+                }
+
+                if (file.size > MAX_IMAGE_SIZE) {
+                    showErrorModal(`Файл "${file.name}" слишком большой (${(file.size / 1024 / 1024).toFixed(1)}MB). Максимум 10MB`);
+                    continue;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    showErrorModal(`Файл "${file.name}" не является изображением`);
+                    continue;
+                }
+
+
+
+                const loadingItem = document.createElement('div');
+                loadingItem.className = 'image-preview-item';
+                loadingItem.style.opacity = '0.5';
+                loadingItem.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-primary);">Сжатие...</div>`;
+                previewGrid.appendChild(loadingItem);
+
+                try {
+                    const compressedDataUrl = await smartCompressImage(file);
+
+                    const sizeInKB = (compressedDataUrl.length * 3 / 4 / 1024).toFixed(0);
+
+                    const maxBase64Size = 1.5 * 1024 * 1024;
+                    if (compressedDataUrl.length > maxBase64Size) {
+                        showErrorModal(`Не удалось достаточно сжать изображение "${file.name}". Попробуйте изображение меньшего разрешения.`);
+                        previewGrid.removeChild(loadingItem);
+                        continue;
+                    }
+
+                    uploadedImages.push(compressedDataUrl);
+
+                    loadingItem.style.opacity = '1';
+                    loadingItem.innerHTML = `
+                <img src="${compressedDataUrl}">
+                <button type="button" class="remove-image" onclick="removeImage(${uploadedImages.length - 1})">×</button>
+                <div style="position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,0.7);color:white;padding:2px 6px;border-radius:4px;font-size:0.7rem;">${sizeInKB}KB</div>
+            `;
+                } catch (err) {
+                    console.error('Image compression error:', err);
+                    showErrorModal(`Ошибка обработки изображения "${file.name}": ${err.message}`);
+                    previewGrid.removeChild(loadingItem);
+                }
+            }
+
+            updateCounters();
+            e.target.value = '';
+        });
+
+        // Video upload handler
+        document.getElementById('video-upload-area').addEventListener('click', () => {
+            document.getElementById('video-input').click();
+        });
+
+        document.getElementById('video-input').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            const previewGrid = document.getElementById('video-preview-grid');
+
+            for (const file of files) {
+                if (uploadedVideos.length >= MAX_VIDEOS) {
+                    showErrorModal(`Максимум ${MAX_VIDEOS} видео`);
+                    break;
+                }
+
+                if (file.size > MAX_VIDEO_SIZE) {
+                    showErrorModal(`Видео "${file.name}" слишком большое (${(file.size / 1024 / 1024).toFixed(1)}MB). Максимум 100MB`);
+                    continue;
+                }
+
+                if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+                    showErrorModal(`Файл "${file.name}" имеет неподдерживаемый формат. Используйте MP4, WebM, OGG или MOV`);
+                    continue;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const videoDataUrl = e.target.result;
+                    uploadedVideos.push(videoDataUrl);
+
+                    const sizeInMB = (file.size / 1024 / 1024).toFixed(1);
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'video-preview-item';
+                    previewItem.innerHTML = `
+                        <video controls preload="metadata">
+                            <source src="${videoDataUrl}" type="${file.type}">
+                        </video>
+                        <button type="button" class="remove-image" onclick="removeVideo(${uploadedVideos.length - 1})">×</button>
+                        <div style="position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,0.7);color:white;padding:2px 6px;border-radius:4px;font-size:0.7rem;">${sizeInMB}MB</div>
+                    `;
+                    previewGrid.appendChild(previewItem);
+                    updateCounters();
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = '';
+        });
+
+        // Умная функция сжатия с адаптивным качеством
+        async function smartCompressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = async (e) => {
+                    const img = new Image();
+
+                    img.onload = async () => {
+                        const originalWidth = img.width;
+                        const originalHeight = img.height;
+
+                        // Начинаем с максимального качества и размера
+                        let maxWidth = 1920; // Full HD
+                        let quality = 0.85;
+                        let compressedDataUrl;
+
+                        // Попытка 1: Полное качество, разумный размер
+                        compressedDataUrl = await compressToSize(img, maxWidth, quality);
+
+                        // Если слишком большой, уменьшаем размер
+                        if (compressedDataUrl.length > 1.5 * 1024 * 1024) {
+                            maxWidth = 1280;
+                            quality = 0.80;
+                            compressedDataUrl = await compressToSize(img, maxWidth, quality);
+                        }
+
+                        // Если всё ещё большой, ещё сильнее
+                        if (compressedDataUrl.length > 1.5 * 1024 * 1024) {
+                            maxWidth = 1024;
+                            quality = 0.75;
+                            compressedDataUrl = await compressToSize(img, maxWidth, quality);
+                        }
+
+                        // Последняя попытка
+                        if (compressedDataUrl.length > 1.5 * 1024 * 1024) {
+                            maxWidth = 800;
+                            quality = 0.70;
+                            compressedDataUrl = await compressToSize(img, maxWidth, quality);
+                        }
+
+
+
+                        resolve(compressedDataUrl);
+                    };
+
+                    img.onerror = () => reject(new Error('Ошибка загрузки изображения'));
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Вспомогательная функция сжатия до определённого размера с водяным знаком
+        async function compressToSize(img, maxWidth, quality) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                // Масштабируем если больше maxWidth
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                // Рисуем изображение
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF'; // Белый фон для JPEG
+                ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Добавляем водяной знак (логотип Дом Фальконе)
+                const watermark = new Image();
+                watermark.crossOrigin = 'anonymous';
+                watermark.onload = () => {
+                    // Размер водяного знака - 12% от ширины изображения
+                    const watermarkWidth = width * 0.12;
+                    const watermarkHeight = (watermark.height / watermark.width) * watermarkWidth;
+
+                    // Позиция - центр внизу с отступом
+                    const watermarkX = (width - watermarkWidth) / 2;
+                    const watermarkY = height - watermarkHeight - (height * 0.01); // 1% отступ снизу
+
+                    // Рисуем водяной знак без прозрачности
+                    ctx.drawImage(watermark, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+
+                    // Конвертируем в base64 с заданным качеством
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressedDataUrl);
+                };
+
+                watermark.onerror = () => {
+                    // Если логотип не загружен, просто сохраняем без водяного знака
+                    console.warn('Водяной знак не загружен, сохранение без него');
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressedDataUrl);
+                };
+
+                watermark.src = '../assets/images/falcone-watermark.png';
+            });
+        }
+
+        // Функция сжатия изображения
+        async function compressImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const img = new Image();
+
+                    img.onload = () => {
+                        // Создаем canvas
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Масштабируем если больше maxWidth
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        // Рисуем изображение
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Конвертируем в base64 с заданным качеством
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+
+
+                        resolve(compressedDataUrl);
+                    };
+
+                    img.onerror = () => reject(new Error('Ошибка загрузки изображения'));
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Обновленная функция removeImage
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            const previewGrid = document.getElementById('image-preview-grid');
+            previewGrid.innerHTML = '';
+            uploadedImages.forEach((img, idx) => {
+                const sizeInKB = (img.length * 3 / 4 / 1024).toFixed(0);
+                const previewItem = document.createElement('div');
+                previewItem.className = 'image-preview-item';
+                previewItem.innerHTML = `
+            <img src="${img}">
+            <button type="button" class="remove-image" onclick="removeImage(${idx})">×</button>
+            <div style="position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,0.7);color:white;padding:2px 6px;border-radius:4px;font-size:0.7rem;">${sizeInKB}KB</div>
+        `;
+                previewGrid.appendChild(previewItem);
+            });
+            updateCounters();
+        }
+
+        function removeVideo(index) {
+            uploadedVideos.splice(index, 1);
+            const previewGrid = document.getElementById('video-preview-grid');
+            previewGrid.innerHTML = '';
+            uploadedVideos.forEach((video, idx) => {
+                const sizeInMB = (video.length * 3 / 4 / 1024 / 1024).toFixed(1);
+                const previewItem = document.createElement('div');
+                previewItem.className = 'video-preview-item';
+                previewItem.innerHTML = `
+                    <video controls preload="metadata"><source src="${video}"></video>
+                    <button type="button" class="remove-image" onclick="removeVideo(${idx})">×</button>
+                    <div style="position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,0.7);color:white;padding:2px 6px;border-radius:4px;font-size:0.7rem;">${sizeInMB}MB</div>
+                `;
+                previewGrid.appendChild(previewItem);
+            });
+            updateCounters();
+        }
+
+        function updateCounters() {
+            const imagesCounter = document.getElementById('images-counter');
+            const videosCounter = document.getElementById('videos-counter');
+
+            if (imagesCounter) {
+                imagesCounter.textContent = `${uploadedImages.length} / ${MAX_IMAGES} изображений`;
+
+                if (uploadedImages.length >= MAX_IMAGES) {
+                    imagesCounter.classList.add('error');
+                    imagesCounter.classList.remove('warning');
+                } else if (uploadedImages.length >= MAX_IMAGES * 0.8) {
+                    imagesCounter.classList.add('warning');
+                    imagesCounter.classList.remove('error');
+                } else {
+                    imagesCounter.classList.remove('warning', 'error');
+                }
+            }
+
+            if (videosCounter) {
+                videosCounter.textContent = `${uploadedVideos.length} / ${MAX_VIDEOS} видео`;
+
+                if (uploadedVideos.length >= MAX_VIDEOS) {
+                    videosCounter.classList.add('error');
+                    videosCounter.classList.remove('warning');
+                } else if (uploadedVideos.length >= MAX_VIDEOS * 0.8) {
+                    videosCounter.classList.add('warning');
+                    videosCounter.classList.remove('error');
+                } else {
+                    videosCounter.classList.remove('warning', 'error');
+                }
+            }
+        }
+
+        // Замените обработчик отправки формы в вашем HTML на этот код
+
+        document.getElementById('create-news-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('news-title').value.trim();
+            const content = document.getElementById('news-content').value.trim();
+            const tag = document.getElementById('news-tag').value;
+            const customDate = document.getElementById('news-date').value;
+
+            if (!title || !content) {
+                showErrorModal('Заполните все поля');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Публикация...';
+
+            try {
+                // Определяем дату публикации
+                let publicationDate;
+                if (customDate) {
+                    // Если выбрана кастомная дата
+                    publicationDate = new Date(customDate).getTime();
+                } else {
+                    // Если не выбрана - текущая дата
+                    publicationDate = Date.now();
+                }
+
+                const payload = {
+                    title: title,
+                    content: content,
+                    tag: tag,
+                    images: uploadedImages,
+                    videos: uploadedVideos,
+                    customDate: publicationDate // Отправляем кастомную дату
+                };
+
+                const res = await fetch(API_BASE + "/news", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseText = await res.text();
+                let responseData;
+
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (parseErr) {
+                    console.error('Failed to parse response as JSON:', parseErr);
+                    throw new Error('Сервер вернул некорректный ответ: ' + responseText.substring(0, 100));
+                }
+
+                if (res.ok) {
+                    showSuccessModal('Новость опубликована!');
+                    document.getElementById('create-news-modal').classList.remove('active');
+                    document.getElementById('create-news-form').reset();
+                    uploadedImages = [];
+                    uploadedVideos = [];
+                    document.getElementById('image-preview-grid').innerHTML = '';
+                    document.getElementById('video-preview-grid').innerHTML = '';
+                    updateCounters();
+                    await loadNews();
+                } else {
+                    let errorMsg = 'Ошибка: ' + (responseData.error || 'Неизвестная ошибка');
+                    if (responseData.details) {
+                        errorMsg += '\nДетали: ' + responseData.details;
+                    }
+                    showErrorModal(errorMsg);
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                showErrorModal('Ошибка публикации: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Опубликовать новость';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await loadUserHeader();
+                await loadNews();
+            } catch (err) {
+                console.error('Init error:', err);
+            } finally {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.classList.add('loaded');
+                    // Stop hymn if playing
+                    const loaderAudio = document.getElementById('loader-audio');
+                    if (loaderAudio) {
+                        loaderAudio.pause();
+                        loaderAudio.currentTime = 0;
+                    }
+                }
+            }
+        });
+
+        // Page fully loaded
+        window.addEventListener('load', () => {
+            // Loader bereits in DOMContentLoaded versteckt
+        });
+
+        // Открыть изображение в полном размере
+        function openImageFullscreen(imageSrc) {
+            let overlay = document.getElementById('image-fullscreen-overlay');
+
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'image-fullscreen-overlay';
+                overlay.className = 'image-fullscreen-overlay';
+                overlay.innerHTML = '<button class="fullscreen-close" onclick="closeImageFullscreen()">×</button>';
+                document.body.appendChild(overlay);
+
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeImageFullscreen();
+                    }
+                });
+            }
+
+            const existingImg = overlay.querySelector('img');
+            if (existingImg) existingImg.remove();
+
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.onclick = (e) => e.stopPropagation();
+            overlay.appendChild(img);
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Закрыть полноэкранное изображение
+        function closeImageFullscreen() {
+            const overlay = document.getElementById('image-fullscreen-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Закрытие по клавише Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeImageFullscreen();
+            }
+        });
+
+        let notificationsInterval;
+
+        let messagesCheckInterval;
+
+        // Загрузка количества непрочитанных сообщений
+        async function loadUnreadMessagesCount() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Load unread messages error:', err);
+            }
+        }
+
+        // Обновить значок сообщений
+        function updateMessagesBadge(count) {
+            const badge = document.getElementById('messages-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        // Показать тост-уведомление о новом сообщении
+        function showMessageToast(senderName, senderAvatar, messagePreview, chatId, senderId) {
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Проигрываем звук сообщения
+            playNotificationSound('message-notification');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <img src="${senderAvatar || getDefaultAvatar(senderName)}" class="toast-avatar">
+        <div class="toast-content">
+            <div class="toast-name">${senderName}</div>
+            <div class="toast-message">${messagePreview}</div>
+        </div>
+    `;
+
+            toast.addEventListener('click', () => {
+                window.location.href = `../messages?chatWith=${senderId}`;
+            });
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Проверка новых сообщений (для тост-уведомлений)
+        let lastMessageCount = 0;
+        async function checkNewMessages() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/messages/unread-count", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+
+                    if (data.unread_count > lastMessageCount && lastMessageCount > 0) {
+                        // Получаем последние чаты для определения отправителя
+                        const chatsRes = await fetch(API_BASE + "/chats", {
+                            headers: { "Authorization": "Bearer " + token }
+                        });
+
+                        if (chatsRes.ok) {
+                            const chatsData = await chatsRes.json();
+                            const latestChat = chatsData.chats.find(c => c.unread_count > 0);
+
+                            if (latestChat && latestChat.last_message) {
+                                showMessageToast(
+                                    latestChat.other_user.name,
+                                    latestChat.other_user.avatar,
+                                    latestChat.last_message.content,
+                                    latestChat.chat_id,
+                                    latestChat.other_user.id
+                                );
+                            }
+                        }
+                    }
+
+                    lastMessageCount = data.unread_count;
+                    updateMessagesBadge(data.unread_count);
+                }
+            } catch (err) {
+                console.error('Check new messages error:', err);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getDefaultAvatar(name) {
+            const initial = name ? name[0].toUpperCase() : '?';
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45' height='45'%3E%3Crect fill='%23ff1744' width='45' height='45'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='20' font-family='Arial'%3E${initial}%3C/text%3E%3C/svg%3E`;
+        }
+
+        // Загрузка уведомлений
+        let lastNotificationId = 0; // Добавьте эту переменную глобально
+
+        async function loadNotifications() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(API_BASE + "/notifications", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    updateNotificationBadge(data.unread_count);
+                    renderNotifications(data.notifications);
+
+                    // Проверяем новые уведомления для toast
+                    if (data.notifications && data.notifications.length > 0) {
+                        const latestNotif = data.notifications[0];
+
+                        // Если это новое уведомление и оно непрочитанное
+                        if (latestNotif.id > lastNotificationId && latestNotif.is_read === 0) {
+                            showNotificationToast(
+                                latestNotif.type,
+                                latestNotif.title,
+                                latestNotif.message,
+                                latestNotif.id,
+                                latestNotif.related_id
+                            );
+                            lastNotificationId = latestNotif.id;
+                        } else if (lastNotificationId === 0) {
+                            // Инициализация при первой загрузке
+                            lastNotificationId = latestNotif.id;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Load notifications error:', err);
+            }
+        }
+
+        function showNotificationToast(type, title, message, notificationId, relatedId) {
+            // Удаляем предыдущий toast если есть
+            const existingToast = document.querySelector('.toast-notification');
+            if (existingToast) existingToast.remove();
+
+            // Определяем иконку в зависимости от типа
+            let icon = '🔔';
+            let redirectUrl = null;
+            let soundFile = 'notification';
+
+            switch (type) {
+                case 'new_message':
+                    icon = '💬';
+                    soundFile = 'message-notification';
+                    redirectUrl = '../messages';
+                    break;
+                case 'news_like':
+                    icon = '❤️';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_comment':
+                    icon = '💭';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_friend':
+                    icon = '📰';
+                    redirectUrl = relatedId ? `../news?id=${relatedId}` : '../news';
+                    break;
+                case 'news_deleted':
+                    icon = '🗑️';
+                    redirectUrl = '../news';
+                    break;
+                case 'friend_request':
+                    icon = '👥';
+                    redirectUrl = '../dashboard?tab=friends';
+                    break;
+                default:
+                    icon = '🔔';
+            }
+
+            // Проигрываем звук
+            playNotificationSound(soundFile);
+
+            // Создаем toast
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+            <div class="toast-name">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+            // Обработчик клика
+            toast.addEventListener('click', async () => {
+                // Отмечаем уведомление как прочитанное
+                try {
+                    await fetch(API_BASE + "/notifications/read", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ notificationId })
+                    });
+                    await loadNotifications();
+                } catch (err) {
+                    console.error('Mark notification read error:', err);
+                }
+
+                // Переходим по ссылке
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            });
+
+            document.body.appendChild(toast);
+
+            // Автоматически скрываем через 5 секунд
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function playNotificationSound(soundType) {
+            try {
+                const soundId = soundType === 'message-notification'
+                    ? 'message-notification-sound'
+                    : 'notification-sound';
+
+                const audio = document.getElementById(soundId);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.volume = 0.5; // Громкость 50%
+                    audio.play().catch(err => {
+                        console.log('Audio play prevented:', err);
+                    });
+                }
+            } catch (err) {
+                console.error('Play sound error:', err);
+            }
+        }
+
+        // Обновить значок уведомлений
+        function updateNotificationBadge(count) {
+            const badge = document.getElementById('notification-badge');
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Отрисовать список уведомлений
+        // Замените функцию renderNotifications на эту версию:
+
+        function renderNotifications(notifications) {
+            const dropdown = document.getElementById('notifications-dropdown');
+
+            // Создаём полную структуру если её нет
+            if (!dropdown.querySelector('.notifications-header')) {
+                dropdown.innerHTML = `
+            <div class="notifications-header">
+                <h3>Уведомления</h3>
+                <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+            </div>
+            <div id="notifications-list"></div>
+        `;
+            }
+
+            const list = document.getElementById('notifications-list');
+
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = '<div class="no-notifications">Нет уведомлений</div>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(notif => {
+                const time = formatNotificationTime(notif.created_at);
+                const unreadClass = notif.is_read === 0 ? 'unread' : '';
+
+                return `
+            <div class="notification-item ${unreadClass}" onclick="handleNotificationClick(${notif.id}, ${notif.related_id}, '${notif.type}')">
+                <div class="notification-title">${escapeHtml(notif.title)}</div>
+                <div class="notification-message">${escapeHtml(notif.message)}</div>
+                <div class="notification-time">${time}</div>
+            </div>
+        `;
+            }).join('');
+
+            // ✅ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Привязываем обработчик каждый раз после рендера
+            const markAllReadBtn = document.getElementById('mark-all-read-btn');
+            if (markAllReadBtn) {
+                // Удаляем старый обработчик (если есть) и добавляем новый
+                markAllReadBtn.replaceWith(markAllReadBtn.cloneNode(true));
+                const newBtn = document.getElementById('mark-all-read-btn');
+
+                newBtn.addEventListener('click', async () => {
+                    try {
+                        await fetch(API_BASE + "/notifications/read-all", {
+                            method: 'POST',
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        await loadNotifications();
+                    } catch (err) {
+                        console.error('Mark all read error:', err);
+                    }
+                });
+            }
+        }
+
+        // Форматировать время уведомления
+        function formatNotificationTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Только что';
+            if (minutes < 60) return `${minutes} мин назад`;
+            if (hours < 24) return `${hours} ч назад`;
+            if (days < 7) return `${days} д назад`;
+
+            return new Date(timestamp).toLocaleDateString('ru-RU');
+        }
+
+        // Обработка клика по уведомлению
+        async function handleNotificationClick(notificationId, relatedId, type) {
+            try {
+                // Отмечаем как прочитанное
+                await fetch(API_BASE + "/notifications/read", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ notificationId })
+                });
+
+                // Перезагружаем уведомления
+                await loadNotifications();
+
+                // Переходим к связанному контенту
+                if (relatedId && type.includes('news')) {
+                    // Прокручиваем к новости (если мы на странице новостей)
+                    document.getElementById('notifications-dropdown').classList.remove('active');
+                }
+            } catch (err) {
+                console.error('Handle notification click error:', err);
+            }
+        }
+
+        // Переключение выпадающего списка уведомлений
+        document.getElementById('notification-bell')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifications-dropdown');
+            dropdown.classList.toggle('active');
+            if (dropdown.classList.contains('active')) {
+                loadNotifications();
+            }
+        });
+
+        // Закрытие выпадающего списка при клике вне его
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notifications-dropdown');
+            const bell = document.getElementById('notification-bell');
+            if (dropdown && !dropdown.contains(e.target) && !bell.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // ==================== NEWSPAPER LIGHTBOX ====================
+        const newspaperClickable = document.getElementById('newspaper-clickable');
+        const newspaperLightbox = document.getElementById('newspaper-lightbox');
+        const newspaperLightboxClose = document.getElementById('newspaper-lightbox-close');
+
+        function openNewspaperLightbox() {
+            newspaperLightbox.classList.add('active');
+            newspaperLightbox.classList.remove('closing');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNewspaperLightbox() {
+            newspaperLightbox.classList.add('closing');
+            setTimeout(() => {
+                newspaperLightbox.classList.remove('active');
+                newspaperLightbox.classList.remove('closing');
+                document.body.style.overflow = '';
+            }, 400);
+        }
+
+        // Open lightbox when clicking on newspaper area
+        if (newspaperClickable) {
+            newspaperClickable.addEventListener('click', openNewspaperLightbox);
+        }
+
+        // Close lightbox when clicking close button
+        if (newspaperLightboxClose) {
+            newspaperLightboxClose.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeNewspaperLightbox();
+            });
+        }
+
+        // Close lightbox when clicking on background
+        if (newspaperLightbox) {
+            newspaperLightbox.addEventListener('click', (e) => {
+                if (e.target === newspaperLightbox) {
+                    closeNewspaperLightbox();
+                }
+            });
+        }
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && newspaperLightbox?.classList.contains('active')) {
+                closeNewspaperLightbox();
+            }
+        });
+
+        // Функция сброса даты на текущую
+        function resetNewsDate() {
+            const dateInput = document.getElementById('news-date');
+            const now = new Date();
+            // Форматируем в формат datetime-local (YYYY-MM-DDTHH:MM)
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+    </script>
+
+    <!-- Audio for notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="../assets/audio/notification.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="message-notification-sound" preload="auto">
+        <source src="../assets/audio/message-notification.mp3" type="audio/mpeg">
+    </audio>
+    <script src="../assets/js/analytics.js"></script>
 </body>
 
 </html>

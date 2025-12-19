@@ -1,0 +1,302 @@
+/**
+ * User Menu & Notification Styles
+ * Shared styles for authenticated user header components
+ * Include this file on all pages that show user login status
+ */
+
+/* ============ USER MENU ============ */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.3rem 1rem 0.3rem 0.3rem;
+    background: rgba(255, 23, 68, 0.1);
+    border: 1px solid rgba(255, 23, 68, 0.3);
+    border-radius: 30px;
+    position: relative;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.user-profile-info:hover {
+    background: rgba(255, 23, 68, 0.2);
+    border-color: rgba(255, 23, 68, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
+}
+
+
+
+.header-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #a30303;
+    position: relative;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.user-display-name {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.user-points-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--color-primary);
+}
+
+/* ============ NOTIFICATION BELL ============ */
+.notification-bell {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 23, 68, 0.1);
+    border: 1px solid rgba(255, 23, 68, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.notification-bell:hover {
+    background: rgba(255, 23, 68, 0.2);
+    transform: translateY(-2px);
+}
+
+.notification-bell svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: 2px solid var(--color-bg);
+}
+
+/* ============ NOTIFICATIONS DROPDOWN ============ */
+.notifications-dropdown {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 350px;
+    max-height: calc(100vh - 120px);
+    background: var(--color-surface);
+    border: 1px solid rgba(255, 23, 68, 0.3);
+    border-radius: 15px;
+    overflow: hidden;
+    overflow-y: auto;
+    z-index: 10000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.notifications-dropdown.active {
+    display: block;
+}
+
+.notifications-header {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 23, 68, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notifications-header h3 {
+    color: white;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.mark-all-read {
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: var(--transition);
+}
+
+.mark-all-read:hover {
+    text-decoration: underline;
+}
+
+.notification-item {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 23, 68, 0.1);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.notification-item:hover {
+    background: rgba(255, 23, 68, 0.05);
+}
+
+.notification-item.unread {
+    background: rgba(255, 23, 68, 0.1);
+}
+
+.notification-item.unread::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.notification-title {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.notification-message {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+}
+
+.notification-time {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+}
+
+.no-notifications {
+    padding: 2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============ TOAST NOTIFICATIONS ============ */
+.toast-notification {
+    position: fixed;
+    top: 100px;
+    right: 30px;
+    background: var(--color-surface);
+    border: 1px solid rgba(255, 23, 68, 0.3);
+    border-radius: 15px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease;
+    z-index: 10000;
+    cursor: pointer;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-notification.hide {
+    animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideOut {
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+.toast-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-primary);
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-name {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+}
+
+.toast-message {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+}
+
+/* ============ SCROLLBARS ============ */
+.notifications-dropdown {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.notifications-dropdown::-webkit-scrollbar {
+    width: 0;
+    display: none;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+    .notifications-dropdown {
+        position: fixed;
+        top: 70px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-height: calc(100vh - 100px);
+    }
+
+    .toast-notification {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: none;
+    }
+}

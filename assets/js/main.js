@@ -1,3 +1,65 @@
+// ==================== ПРОВЕРКА СТАТУСА САЙТА ====================
+(async function checkSiteStatus() {
+    // Не проверяем на странице 404
+    if (window.location.pathname.includes('/404')) return;
+
+    const API_BASE = 'https://dom-falcone-auth.dom-falcone-official.workers.dev/api';
+
+    try {
+        const res = await fetch(API_BASE + '/site-status');
+
+        if (res.ok) {
+            const data = await res.json();
+
+            if (!data.enabled) {
+                // Проверяем, не админ ли это
+                const token = localStorage.getItem('auth_token');
+
+                if (token) {
+                    const userRes = await fetch(API_BASE + '/me', {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+
+                    if (userRes.ok) {
+                        const user = await userRes.json();
+
+                        // Админы могут заходить даже при отключенном сайте
+                        if (user.role === 'admin') {
+                            console.log('🔐 Admin access: site disabled but admin logged in');
+
+                            // Показываем предупреждение админу
+                            const warningBanner = document.createElement('div');
+                            warningBanner.style.cssText = `
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                right: 0;
+                                background: linear-gradient(135deg, #d32f2f, #f44336);
+                                color: white;
+                                padding: 0.8rem;
+                                text-align: center;
+                                font-weight: 700;
+                                z-index: 999999;
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                            `;
+                            warningBanner.innerHTML = '⚠️ САЙТ ОТКЛЮЧЕН - Видно только администраторам';
+                            document.body.prepend(warningBanner);
+
+                            return;
+                        }
+                    }
+                }
+
+                // Перенаправляем обычных пользователей на 404
+                window.location.replace('../404');
+            }
+        }
+    } catch (err) {
+        console.error('Site status check error:', err);
+        // При ошибке не блокируем доступ (fail-safe)
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     // Create canvas for embers effect
     const canvas = document.createElement('canvas');
@@ -103,7 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
         observer.observe(el);
     });
+
 });
+
 
 // Contact Form Handler
 const contactForm = document.getElementById('contactForm');
@@ -135,9 +199,9 @@ if (contactForm) {
             }, function (error) {
                 console.error('EmailJS Error:', error);
                 if (error.status === 412) {
-                    alert('Ошибка конфигурации отправки (Invalid Grant). Пожалуйста, свяжитесь с администратором.');
+                    showErrorModal('Ошибка конфигурации отправки (Invalid Grant). Пожалуйста, свяжитесь с администратором.');
                 } else {
-                    alert('Произошла ошибка при отправке. Попробуйте позже.');
+                    showErrorModal('Произошла ошибка при отправке. Попробуйте позже.');
                 }
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
@@ -188,71 +252,7 @@ if (lightbox) {
     });
 }
 
-// Login System
-const loginSection = document.querySelector('.login-section');
-if (loginSection) {
-    const userBtns = document.querySelectorAll('.user-btn');
-    const passwordInput = document.getElementById('password-input');
-    const loginSubmitBtn = document.getElementById('login-submit-btn');
-    const loginError = document.getElementById('login-error');
-    const loginFormGroup = document.querySelector('.login-form-group');
-    let selectedUser = null;
-
-    // User Selection
-    userBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Deselect all
-            userBtns.forEach(b => b.classList.remove('selected'));
-            // Select clicked
-            btn.classList.add('selected');
-            selectedUser = btn.dataset.user;
-
-            // Enable password field
-            loginFormGroup.classList.add('active');
-            passwordInput.disabled = false;
-            loginSubmitBtn.disabled = false;
-            passwordInput.focus();
-            loginError.textContent = '';
-        });
-    });
-
-    // Login Submission
-    const handleLogin = () => {
-        const password = passwordInput.value;
-        let isValid = false;
-
-        if (selectedUser === 'Dimone de Patrone') {
-            isValid = (password === '0952012070');
-        } else if (selectedUser === 'Don Falcone') {
-            isValid = (password === '0634935384');
-        } else if (selectedUser === 'Maxone Povarone') {
-            isValid = (password === '26121968M@x');
-        } else if (selectedUser === 'Antone Snusone') {
-            isValid = (password === '2KC2wjud_');
-        } else {
-            isValid = (password === '12345678');
-        }
-
-        if (isValid) {
-            // Success
-            localStorage.setItem('domFalconeUser', selectedUser);
-            window.location.href = 'index.html';
-        } else {
-            // Error
-            loginError.textContent = 'Неверный пароль. Доступ запрещен.';
-            passwordInput.value = '';
-            passwordInput.focus();
-        }
-    };
-
-    loginSubmitBtn.addEventListener('click', handleLogin);
-
-    passwordInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    });
-}
+// Legacy Login System removed - now handled by inline scripts in login/index.html
 
 // Check Login State & Update Header
 const checkLoginState = () => {
@@ -368,6 +368,190 @@ const hideSuccessModal = () => {
     }
 };
 
+// Create and inject Error Modal
+const createErrorModal = () => {
+    if (document.getElementById('error-modal')) return;
+
+    const modal = document.createElement('div');
+    modal.id = 'error-modal';
+    modal.className = 'error-modal';
+    modal.innerHTML = `
+        <div class="error-modal-content">
+            <div class="error-modal-text" id="error-modal-message"></div>
+            <div class="error-modal-buttons">
+                <button class="btn-error-confirm">OK</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Event Listeners
+    const confirmBtn = modal.querySelector('.btn-error-confirm');
+
+    confirmBtn.addEventListener('click', hideErrorModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideErrorModal();
+        }
+    });
+};
+
+const showErrorModal = (message) => {
+    createErrorModal(); // Ensure it exists
+    const modal = document.getElementById('error-modal');
+    const messageDiv = document.getElementById('error-modal-message');
+    messageDiv.textContent = message;
+    modal.classList.add('active');
+};
+
+const hideErrorModal = () => {
+    const modal = document.getElementById('error-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+};
+
+// ============ CONFIRM MODAL (with Yes/Cancel) ============
+let confirmResolve = null;
+
+const createConfirmModal = () => {
+    if (document.getElementById('confirm-modal')) return;
+
+    const style = document.createElement('style');
+    style.textContent = `
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+            animation: fadeIn 0.2s ease;
+        }
+        .confirm-modal.active {
+            display: flex;
+        }
+        .confirm-modal-content {
+            background: linear-gradient(165deg, #1a1a1a, #0d0d0d);
+            border: 2px solid #4CAF50;
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(76, 175, 80, 0.2);
+            animation: modalSlideIn 0.3s ease;
+            max-width: 400px;
+        }
+        @keyframes modalSlideIn {
+            from { transform: scale(0.9) translateY(-20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .confirm-modal-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .btn-confirm-yes {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .btn-confirm-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        .btn-confirm-cancel {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .btn-confirm-cancel:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            color: white;
+            transform: translateY(-2px);
+        }
+    `;
+    document.head.appendChild(style);
+
+    const modal = document.createElement('div');
+    modal.id = 'confirm-modal';
+    modal.className = 'confirm-modal';
+    modal.innerHTML = `
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-text" id="confirm-modal-message"></div>
+            <div class="confirm-modal-buttons">
+                <button class="btn-confirm-yes">Да</button>
+                <button class="btn-confirm-cancel">Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Event Listeners
+    const yesBtn = modal.querySelector('.btn-confirm-yes');
+    const cancelBtn = modal.querySelector('.btn-confirm-cancel');
+
+    yesBtn.addEventListener('click', () => {
+        hideConfirmModal();
+        if (confirmResolve) confirmResolve(true);
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        hideConfirmModal();
+        if (confirmResolve) confirmResolve(false);
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideConfirmModal();
+            if (confirmResolve) confirmResolve(false);
+        }
+    });
+};
+
+const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+        createConfirmModal();
+        confirmResolve = resolve;
+        const modal = document.getElementById('confirm-modal');
+        const messageDiv = document.getElementById('confirm-modal-message');
+        messageDiv.textContent = message;
+        modal.classList.add('active');
+    });
+};
+
+const hideConfirmModal = () => {
+    const modal = document.getElementById('confirm-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+};
+
 // Run check on load
 document.addEventListener('DOMContentLoaded', checkLoginState);
 
@@ -458,7 +642,6 @@ if (newsModal) {
 function updateStrangerTimer() {
     const timerContainer = document.getElementById('stranger-timer');
     const messageElement = document.getElementById('stranger-message');
-    console.log('Stranger Timer updated');
 
     // Elements for individual units
     const daysEl = document.getElementById('timer-days');
@@ -542,12 +725,23 @@ document.addEventListener('DOMContentLoaded', updateStrangerTimer);
 
 // Add Site Version Label
 document.addEventListener('DOMContentLoaded', () => {
-    const footerContainer = document.querySelector('.site-footer .container');
-    if (footerContainer) {
-        const versionDiv = document.createElement('div');
-        versionDiv.className = 'site-version';
-        versionDiv.textContent = 'Версия сайта: 1.3.3. Идет разработка.';
-        footerContainer.appendChild(versionDiv);
+    const versionText = 'Версия сайта: 1.0. Идет разработка.';
+
+    // Update ALL .site-version elements (footer + mobile menu)
+    const versionElements = document.querySelectorAll('.site-version');
+    versionElements.forEach(el => {
+        el.textContent = versionText;
+    });
+
+    // Fallback: create and insert in footer if not found
+    if (versionElements.length === 0) {
+        const footerSmall = document.querySelector('.site-footer .container small');
+        if (footerSmall) {
+            const versionDiv = document.createElement('div');
+            versionDiv.className = 'site-version';
+            versionDiv.textContent = versionText;
+            footerSmall.insertAdjacentElement('afterend', versionDiv);
+        }
     }
 });
 // --- Page Loader Logic ---
@@ -560,6 +754,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const startTime = Date.now();
 
         window.addEventListener('load', () => {
+            // Skip for news page - it handles its own loading after API call
+            const isNewsPage = window.location.pathname.includes('/news');
+            if (isNewsPage) return;
+
             const elapsedTime = Date.now() - startTime;
             const remainingTime = Math.max(0, minLoadTime - elapsedTime);
 
@@ -607,3 +805,89 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// Auth System Integration removed - now handled by inline scripts in login/index.html
+
+// ============ NAVIGATION ACTIVE STATE ============
+// This MUST be at the very end of the file to ensure the DOM is fully parsed
+// when the script runs (since script is loaded at end of body)
+(function setActiveNavLink() {
+    const navLinks = document.querySelectorAll('.nav a');
+    if (!navLinks.length) return; // No navigation found
+
+    const currentPath = window.location.pathname; // e.g., /about/, /enemies/, /
+
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        // Extract the folder name from href (e.g., "../about" -> "about", "../homepage" -> "homepage")
+        const linkPageName = href.substring(href.lastIndexOf('/') + 1);
+
+        // Extract the current page folder from URL (e.g., "/about/" -> "about", "/" -> "")
+        const pathParts = currentPath.split('/').filter(Boolean);
+        let currentPageName = pathParts.length > 0 ? pathParts[0] : '';
+
+        // Treat root "/" as "homepage"
+        if (currentPath === '/' || currentPath === '/homepage/' || currentPath === '/homepage') {
+            currentPageName = 'homepage';
+        }
+
+        // Compare folder names (case-insensitive)
+        if (linkPageName.toLowerCase() === currentPageName.toLowerCase()) {
+            link.classList.add('active');
+        }
+    });
+})();
+
+// ==================== BURGER MENU ====================
+(function initBurgerMenu() {
+    const burgerMenu = document.getElementById('burger-menu');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+    const body = document.body;
+
+    if (!burgerMenu || !mobileNav || !mobileNavOverlay) return;
+
+    function toggleMenu() {
+        burgerMenu.classList.toggle('active');
+        mobileNav.classList.toggle('active');
+        mobileNavOverlay.classList.toggle('active');
+        body.classList.toggle('mobile-menu-open');
+    }
+
+    function closeMenu() {
+        burgerMenu.classList.remove('active');
+        mobileNav.classList.remove('active');
+        mobileNavOverlay.classList.remove('active');
+        body.classList.remove('mobile-menu-open');
+    }
+
+    // Toggle menu on burger click
+    burgerMenu.addEventListener('click', toggleMenu);
+
+    // Close menu on overlay click
+    mobileNavOverlay.addEventListener('click', closeMenu);
+
+    // Close menu on link click
+    const mobileNavLinks = mobileNav.querySelectorAll('a');
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    // Close menu on ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+            closeMenu();
+        }
+    });
+
+    // Highlight active page
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    mobileNavLinks.forEach(link => {
+        const href = link.getAttribute('href').replace('../', '').replace('/', '');
+        if (href === currentPage || (currentPage === '' && href === 'homepage')) {
+            link.classList.add('active');
+        }
+    });
+})();

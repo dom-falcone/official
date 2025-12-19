@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Dom Falcone//Meeting//RU
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+DTSTART:20251212T170000
+DTEND:20251213T020000
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:Заседание Дома Фальконе 🦅
+DESCRIPTION:Еженедельное заседание Дома Фальконе.\n\nUna Fides, Unus Dominus!\n\n🌐 https://dom-falcone.github.io/official/
+LOCATION:Dom Falcone
+STATUS:CONFIRMED
+UID:dom-falcone-weekly-meeting@dom-falcone.github.io
+END:VEVENT
+END:VCALENDAR

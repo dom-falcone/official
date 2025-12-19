@@ -23,6 +23,9 @@
 .loader-content {
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .loader-text {
@@ -51,14 +54,12 @@
 
 /* Loader Hymn Player */
 .loader-hymn-section {
-    position: absolute;
-    bottom: 50px;
-    left: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    margin-top: 2rem;
 }
 
 .loader-hymn-label {
