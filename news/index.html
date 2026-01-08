@@ -1710,6 +1710,70 @@
             transform: rotate(90deg) scale(1.1);
         }
 
+        /* Navigation arrows for fullscreen overlay */
+        .fullscreen-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 23, 68, 0.7);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 10001;
+            opacity: 0.8;
+        }
+
+        .fullscreen-nav:hover {
+            background: var(--color-primary);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .fullscreen-prev {
+            left: 20px;
+        }
+
+        .fullscreen-next {
+            right: 20px;
+        }
+
+        .fullscreen-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            z-index: 10001;
+        }
+
+        @media (max-width: 768px) {
+            .fullscreen-nav {
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
+            }
+
+            .fullscreen-prev {
+                left: 10px;
+            }
+
+            .fullscreen-next {
+                right: 10px;
+            }
+        }
+
         @media (max-width: 768px) {
             .news-images-grid {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -2113,7 +2177,7 @@
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container">
-            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <small>© Dom Falcone 2026. Все права защищены. Прям реально защищены.</small>
             <div class="site-version"></div>
             <div class="footer-links">
                 <a href="../faq">FAQ</a>
@@ -2283,7 +2347,7 @@
                                 ${news.images.length > 0 ? `
                                     <div class="news-images-grid">
                                         ${news.images.map((img, idx) => `
-                                            <div class="news-image-item" onclick="openImageFullscreen('${img}')">
+                                            <div class="news-image-item" onclick="openImageFullscreen('${img}', this.closest('.news-item'))">
                                                 <img src="${img}" alt="Изображение ${idx + 1}" loading="lazy">
                                             </div>
                                         `).join('')}
@@ -3071,14 +3135,71 @@
         });
 
         // Открыть изображение в полном размере
-        function openImageFullscreen(imageSrc) {
+        let galleryMediaItems = [];
+        let currentMediaIndex = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function openImageFullscreen(imageSrc, newsItemElement) {
+            // Collect all media items from the same news item
+            galleryMediaItems = [];
+            currentMediaIndex = 0;
+
+            if (newsItemElement) {
+                // Find all images and videos in this news item
+                const images = newsItemElement.querySelectorAll('.news-images-grid img');
+                const videos = newsItemElement.querySelectorAll('.news-videos-grid video');
+
+                images.forEach(img => {
+                    galleryMediaItems.push({ type: 'image', src: img.src });
+                });
+
+                videos.forEach(video => {
+                    galleryMediaItems.push({ type: 'video', src: video.querySelector('source')?.src || video.src });
+                });
+
+                // Find current index
+                currentMediaIndex = galleryMediaItems.findIndex(item => item.src === imageSrc);
+                if (currentMediaIndex === -1) currentMediaIndex = 0;
+            } else {
+                galleryMediaItems = [{ type: 'image', src: imageSrc }];
+            }
+
+            createAndShowOverlay();
+        }
+
+        function openVideoFullscreen(videoSrc, newsItemElement) {
+            galleryMediaItems = [];
+            currentMediaIndex = 0;
+
+            if (newsItemElement) {
+                const images = newsItemElement.querySelectorAll('.news-images-grid img');
+                const videos = newsItemElement.querySelectorAll('.news-videos-grid video');
+
+                images.forEach(img => {
+                    galleryMediaItems.push({ type: 'image', src: img.src });
+                });
+
+                videos.forEach(video => {
+                    galleryMediaItems.push({ type: 'video', src: video.querySelector('source')?.src || video.src });
+                });
+
+                currentMediaIndex = galleryMediaItems.findIndex(item => item.src === videoSrc);
+                if (currentMediaIndex === -1) currentMediaIndex = 0;
+            } else {
+                galleryMediaItems = [{ type: 'video', src: videoSrc }];
+            }
+
+            createAndShowOverlay();
+        }
+
+        function createAndShowOverlay() {
             let overlay = document.getElementById('image-fullscreen-overlay');
 
             if (!overlay) {
                 overlay = document.createElement('div');
                 overlay.id = 'image-fullscreen-overlay';
                 overlay.className = 'image-fullscreen-overlay';
-                overlay.innerHTML = '<button class="fullscreen-close" onclick="closeImageFullscreen()">×</button>';
                 document.body.appendChild(overlay);
 
                 overlay.addEventListener('click', (e) => {
@@ -3086,33 +3207,144 @@
                         closeImageFullscreen();
                     }
                 });
+
+                // Touch swipe support
+                overlay.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                overlay.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleGallerySwipe();
+                }, { passive: true });
             }
 
-            const existingImg = overlay.querySelector('img');
-            if (existingImg) existingImg.remove();
-
-            const img = document.createElement('img');
-            img.src = imageSrc;
-            img.onclick = (e) => e.stopPropagation();
-            overlay.appendChild(img);
+            updateGalleryDisplay();
 
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
+        }
+
+        function handleGallerySwipe() {
+            const deltaX = touchEndX - touchStartX;
+            const minSwipeDistance = 50;
+
+            if (Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                    navigateGalleryPrev();
+                } else {
+                    navigateGalleryNext();
+                }
+            }
+        }
+
+        function updateGalleryDisplay() {
+            const overlay = document.getElementById('image-fullscreen-overlay');
+            if (!overlay) return;
+
+            // Remove existing content except particles
+            const existingMedia = overlay.querySelector('img, video');
+            if (existingMedia) existingMedia.remove();
+
+            const existingNav = overlay.querySelectorAll('.fullscreen-nav, .fullscreen-close, .fullscreen-counter');
+            existingNav.forEach(el => el.remove());
+
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'fullscreen-close';
+            closeBtn.innerHTML = '×';
+            closeBtn.onclick = closeImageFullscreen;
+            overlay.appendChild(closeBtn);
+
+            // Add current media
+            const currentItem = galleryMediaItems[currentMediaIndex];
+            if (currentItem.type === 'image') {
+                const img = document.createElement('img');
+                img.src = currentItem.src;
+                img.onclick = (e) => e.stopPropagation();
+                overlay.appendChild(img);
+            } else {
+                const video = document.createElement('video');
+                video.src = currentItem.src;
+                video.controls = true;
+                video.autoplay = true;
+                video.style.maxWidth = '90%';
+                video.style.maxHeight = '90%';
+                video.style.borderRadius = '12px';
+                video.onclick = (e) => e.stopPropagation();
+                overlay.appendChild(video);
+            }
+
+            // Add navigation arrows if more than one item
+            if (galleryMediaItems.length > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'fullscreen-nav fullscreen-prev';
+                prevBtn.innerHTML = '❮';
+                prevBtn.onclick = (e) => { e.stopPropagation(); navigateGalleryPrev(); };
+                overlay.appendChild(prevBtn);
+
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'fullscreen-nav fullscreen-next';
+                nextBtn.innerHTML = '❯';
+                nextBtn.onclick = (e) => { e.stopPropagation(); navigateGalleryNext(); };
+                overlay.appendChild(nextBtn);
+
+                // Add counter
+                const counter = document.createElement('div');
+                counter.className = 'fullscreen-counter';
+                counter.textContent = `${currentMediaIndex + 1} / ${galleryMediaItems.length}`;
+                overlay.appendChild(counter);
+            }
+        }
+
+        function navigateGalleryPrev() {
+            if (galleryMediaItems.length <= 1) return;
+            // Stop any playing video
+            const video = document.querySelector('#image-fullscreen-overlay video');
+            if (video) video.pause();
+
+            currentMediaIndex = (currentMediaIndex - 1 + galleryMediaItems.length) % galleryMediaItems.length;
+            updateGalleryDisplay();
+        }
+
+        function navigateGalleryNext() {
+            if (galleryMediaItems.length <= 1) return;
+            // Stop any playing video
+            const video = document.querySelector('#image-fullscreen-overlay video');
+            if (video) video.pause();
+
+            currentMediaIndex = (currentMediaIndex + 1) % galleryMediaItems.length;
+            updateGalleryDisplay();
         }
 
         // Закрыть полноэкранное изображение
         function closeImageFullscreen() {
             const overlay = document.getElementById('image-fullscreen-overlay');
             if (overlay) {
+                // Stop any playing video
+                const video = overlay.querySelector('video');
+                if (video) video.pause();
+
                 overlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
         }
 
-        // Закрытие по клавише Escape
+        // Keyboard navigation for fullscreen gallery
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeImageFullscreen();
+            const overlay = document.getElementById('image-fullscreen-overlay');
+            if (!overlay || !overlay.classList.contains('active')) return;
+
+            switch (e.key) {
+                case 'Escape':
+                    closeImageFullscreen();
+                    break;
+                case 'ArrowLeft':
+                    navigateGalleryPrev();
+                    break;
+                case 'ArrowRight':
+                    navigateGalleryNext();
+                    break;
             }
         });
 
@@ -3404,7 +3636,7 @@
                 dropdown.innerHTML = `
             <div class="notifications-header">
                 <h3>Уведомления</h3>
-                <button class="mark-all-read" id="mark-all-read-btn">Прочитать все</button>
+                <button class="mark-all-read">Прочитать все</button>
             </div>
             <div id="notifications-list"></div>
         `;
@@ -3430,14 +3662,15 @@
         `;
             }).join('');
 
-            // ✅ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Привязываем обработчик каждый раз после рендера
-            const markAllReadBtn = document.getElementById('mark-all-read-btn');
+            // ✅ ИСПРАВЛЕНИЕ: Используем querySelector вместо getElementById
+            const markAllReadBtn = dropdown.querySelector('.mark-all-read');
             if (markAllReadBtn) {
                 // Удаляем старый обработчик (если есть) и добавляем новый
-                markAllReadBtn.replaceWith(markAllReadBtn.cloneNode(true));
-                const newBtn = document.getElementById('mark-all-read-btn');
+                const newBtn = markAllReadBtn.cloneNode(true);
+                markAllReadBtn.replaceWith(newBtn);
 
-                newBtn.addEventListener('click', async () => {
+                newBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
                     try {
                         await fetch(API_BASE + "/notifications/read-all", {
                             method: 'POST',

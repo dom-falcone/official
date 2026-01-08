@@ -686,7 +686,7 @@
 
     <footer class="site-footer">
         <div class="container">
-            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <small>© Dom Falcone 2026. Все права защищены. Прям реально защищены.</small>
             <div class="site-version"></div>
             <div class="footer-links">
                 <a href="../faq">FAQ</a>
@@ -1241,6 +1241,40 @@
                         break;
                 }
             });
+
+            // Touch swipe support for mobile
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchEndX = 0;
+            let touchEndY = 0;
+            const minSwipeDistance = 50;
+
+            lightbox.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+
+            lightbox.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const deltaX = touchEndX - touchStartX;
+                const deltaY = touchEndY - touchStartY;
+
+                // Only handle horizontal swipes (ignore if vertical movement is greater)
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                    if (deltaX > 0) {
+                        // Swipe right - go to previous image
+                        navigatePrev();
+                    } else {
+                        // Swipe left - go to next image
+                        navigateNext();
+                    }
+                }
+            }
 
             // Initialize on DOM ready
             if (document.readyState === 'loading') {

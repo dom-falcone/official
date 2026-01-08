@@ -218,6 +218,185 @@
                 flex-direction: column;
             }
         }
+
+        /* Friends Modal Styles */
+        .friends-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .friends-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .friends-modal {
+            background: linear-gradient(165deg, rgba(20, 10, 12, 0.98) 0%, rgba(10, 5, 6, 0.99) 100%);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(255, 23, 68, 0.15);
+            animation: modalZoomIn 0.3s ease;
+        }
+
+        @keyframes modalZoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .friends-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 23, 68, 0.2);
+        }
+
+        .friends-modal-header h3 {
+            margin: 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .friends-modal-close {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .friends-modal-close:hover {
+            background: var(--color-primary);
+            transform: rotate(90deg);
+        }
+
+        .friends-modal-content {
+            padding: 1rem 2rem 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .friends-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .friend-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 23, 68, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .friend-item:hover {
+            background: rgba(255, 23, 68, 0.1);
+            border-color: rgba(255, 23, 68, 0.3);
+            transform: translateX(5px);
+        }
+
+        .friend-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .friend-avatar-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .friend-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .friend-name {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .friend-rank {
+            color: var(--color-primary);
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+        }
+
+        .no-friends {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .no-friends-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Make friends count clickable */
+        .friends-stat-clickable {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            border-radius: 12px;
+        }
+
+        .friends-stat-clickable:hover {
+            background: rgba(255, 23, 68, 0.1);
+            transform: scale(1.05);
+        }
     </style>
     <link rel="stylesheet" href="../assets/css/user-menu.css?v=1">
 </head>
@@ -363,7 +542,7 @@
                             <div class="profile-stat-value" id="points">0</div>
                             <div class="profile-stat-label">Очков</div>
                         </div>
-                        <div class="profile-stat">
+                        <div class="profile-stat friends-stat-clickable" id="friends-stat" onclick="openFriendsModal()">
                             <div class="profile-stat-value" id="friends-count">0</div>
                             <div class="profile-stat-label">Друзей</div>
                         </div>
@@ -397,11 +576,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Friends Modal -->
+        <div class="friends-modal-overlay" id="friends-modal-overlay">
+            <div class="friends-modal">
+                <div class="friends-modal-header">
+                    <h3 id="friends-modal-title">Друзья</h3>
+                    <button class="friends-modal-close" onclick="closeFriendsModal()">×</button>
+                </div>
+                <div class="friends-modal-content">
+                    <div class="friends-list" id="friends-list">
+                        <div class="no-friends">
+                            <div class="no-friends-icon">👥</div>
+                            <p>Загрузка...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer class="site-footer">
         <div class="container">
-            <small>© Dom Falcone 2025. Все права защищены. Прям реально защищены.</small>
+            <small>© Dom Falcone 2026. Все права защищены. Прям реально защищены.</small>
             <div class="site-version"></div>
             <div class="footer-links">
                 <a href="../faq">FAQ</a>
@@ -1039,6 +1236,112 @@
             const bell = document.getElementById('notification-bell');
             if (dropdown && !dropdown.contains(e.target) && !bell.contains(e.target)) {
                 dropdown.classList.remove('active');
+            }
+        });
+
+        // ============ FRIENDS MODAL ============
+        async function openFriendsModal() {
+            const modal = document.getElementById('friends-modal-overlay');
+            const friendsList = document.getElementById('friends-list');
+            const modalTitle = document.getElementById('friends-modal-title');
+
+            // Get the display name for the modal title
+            const displayName = document.getElementById('display-name').textContent;
+            modalTitle.textContent = `Друзья — ${displayName}`;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Show loading state
+            friendsList.innerHTML = `
+                <div class="no-friends">
+                    <div class="no-friends-icon">⏳</div>
+                    <p>Загрузка...</p>
+                </div>
+            `;
+
+            try {
+                const headers = token ? { "Authorization": "Bearer " + token } : {};
+
+                // Try /user/{id}/friends endpoint, fallback to parsing profile friends_count
+                let friendsData = [];
+
+                // First try the dedicated user friends endpoint
+                const res = await fetch(API_BASE + "/user/" + profileUserId + "/friends", { headers });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    friendsData = data.friends || [];
+                } else if (res.status === 404) {
+                    // Endpoint might not exist - show message that feature is not available
+                    friendsList.innerHTML = `
+                        <div class="no-friends">
+                            <div class="no-friends-icon">🔒</div>
+                            <p>Список друзей скрыт</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                renderFriendsList(friendsData);
+            } catch (err) {
+                console.error('Load friends error:', err);
+                friendsList.innerHTML = `
+                    <div class="no-friends">
+                        <div class="no-friends-icon">❌</div>
+                        <p>Ошибка загрузки</p>
+                    </div>
+                `;
+            }
+        }
+
+        function closeFriendsModal() {
+            const modal = document.getElementById('friends-modal-overlay');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function renderFriendsList(friends) {
+            const friendsList = document.getElementById('friends-list');
+
+            if (friends.length === 0) {
+                friendsList.innerHTML = `
+                    <div class="no-friends">
+                        <div class="no-friends-icon">👥</div>
+                        <p>У пользователя пока нет друзей</p>
+                    </div>
+                `;
+                return;
+            }
+
+            friendsList.innerHTML = friends.map(friend => {
+                const avatarHtml = friend.avatar_url
+                    ? `<img src="${friend.avatar_url}" alt="${escapeHtml(friend.display_name)}" class="friend-avatar">`
+                    : `<div class="friend-avatar-placeholder">${(friend.display_name || '?')[0].toUpperCase()}</div>`;
+
+                return `
+                    <a href="../profile?id=${friend.id}" class="friend-item">
+                        ${avatarHtml}
+                        <div class="friend-info">
+                            <div class="friend-name">${escapeHtml(friend.display_name || 'Аноним')}</div>
+                            <div class="friend-rank">${escapeHtml(friend.rank || 'Новичок')}</div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('friends-modal-overlay')?.addEventListener('click', (e) => {
+            if (e.target.id === 'friends-modal-overlay') {
+                closeFriendsModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFriendsModal();
             }
         });
     </script>
